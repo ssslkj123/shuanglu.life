@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shuanglu的博客</title>
+    <link>https://shuanglu.life/</link>
+    <description>Recent content on Shuanglu的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 05 Jul 2021 17:33:46 +0800</lastBuildDate><atom:link href="https://shuanglu.life/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20200826证书转换</title>
+      <link>https://shuanglu.life/post/20200826%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</link>
+      <pubDate>Mon, 05 Jul 2021 17:33:46 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/post/20200826%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</guid>
+      <description>前言： Windows 当中通常证书所使用的格式是pfx证书，pfx证书通常会附带公钥与私钥.即有Public key Cryptography Standards #12 ，PKCS#12来进行了标准定义，包涵公钥与私钥的二进制证书形式，其结尾通常为pfx 或 p12而cer或者Base64是只包涵二进制编码的证书，且只会包涵公钥。且文件以cer作为结</description>
+    </item>
+    
+    <item>
+      <title>关于我</title>
+      <link>https://shuanglu.life/about/</link>
+      <pubDate>Mon, 05 Jul 2021 16:31:05 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/about/</guid>
+      <description>有技术洁癖，喜欢接触前沿技术，爱折腾，野生IT狗一枚 崇尚开源精神，痴迷于开源的技术发展，现已投身Istio 服务网格相关研究中。 可加好友，欢迎来撩。</description>
+    </item>
+    
+    <item>
+      <title>20201208_nginx缓冲区参数配置优化</title>
+      <link>https://shuanglu.life/post/20201208_nginx%E7%BC%93%E5%86%B2%E5%8C%BA%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Mon, 05 Jul 2021 14:25:25 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/post/20201208_nginx%E7%BC%93%E5%86%B2%E5%8C%BA%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96/</guid>
+      <description>nginx缓冲区优化 关于缓冲, 主要是合理设置缓冲区大小, 尽量避免缓冲到硬盘时的情况 proxy_buffering proxy_buffering这个参数用来控制是否打开后端响应内容的缓冲区，如果这个设置为off，那么proxy_buffers和proxy_busy_buffers_size这两个指令将会失效。</description>
+    </item>
+    
+    <item>
+      <title>归档</title>
+      <link>https://shuanglu.life/archives/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuanglu.life/archives/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>搜索</title>
+      <link>https://shuanglu.life/search/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuanglu.life/search/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

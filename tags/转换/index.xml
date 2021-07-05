@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>转换 on Shuanglu的博客</title>
+    <link>https://shuanglu.life/tags/%E8%BD%AC%E6%8D%A2/</link>
+    <description>Recent content in 转换 on Shuanglu的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 05 Jul 2021 17:33:46 +0800</lastBuildDate><atom:link href="https://shuanglu.life/tags/%E8%BD%AC%E6%8D%A2/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20200826证书转换</title>
+      <link>https://shuanglu.life/post/20200826%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</link>
+      <pubDate>Mon, 05 Jul 2021 17:33:46 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/post/20200826%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</guid>
+      <description>前言： Windows 当中通常证书所使用的格式是pfx证书，pfx证书通常会附带公钥与私钥.即有Public key Cryptography Standards #12 ，PKCS#12来进行了标准定义，包涵公钥与私钥的二进制证书形式，其结尾通常为pfx 或 p12而cer或者Base64是只包涵二进制编码的证书，且只会包涵公钥。且文件以cer作为结</description>
+    </item>
+    
+  </channel>
+</rss>
