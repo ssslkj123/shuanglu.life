@@ -51,7 +51,7 @@
                         Shuanglu的博客
                     </a>
                 
-                <p class="description">专注于Kubernetes,Docker,容器，CloudNative等相关</p>
+                <p class="description">专注于Kubernetes,Docker,容器,CloudNative等相关</p>
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
@@ -74,6 +74,35 @@
                 <div class="col-8" id="main">
                     
 <div class="res-cons">
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://shuanglu.life/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/" title="20210625_harbor_retention_500错误处理">20210625_harbor_retention_500错误处理</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2021年7月5日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/Harbor'>Harbor</a></span>
+            
+            <span class="meta-category"><a href='/categories/docker'>docker</a></span>
+            
+            <span class="meta-category"><a href='/categories/1.10&#43;'>1.10&#43;</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            背景 harbor 1.9.X 升级到1.10.X之后使用项目当中的tag保留功能会有bug，无法进行镜像的删除，并且也无法删除曾经创建的保留规则。如果需要进行tag保留功能的使用，需要手动将原有的tag保留规则删除后再重新创建，即可恢复。 进入postgresql的 容器 docker exec -it harbor-db /bin/bash 连接本地数据库 psql -U postgres -d registry……
+        </div>
+        <p class="readmore"><a href="https://shuanglu.life/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/">阅读全文</a></p>
+    </article>
+    
     
     
     <article class="post">
@@ -179,6 +208,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://shuanglu.life/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/" title="20210625_harbor_retention_500错误处理">20210625_harbor_retention_500错误处理</a>
+    </li>
+    
+    <li>
         <a href="https://shuanglu.life/post/20200826%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/" title="20200826证书转换">20200826证书转换</a>
     </li>
     
@@ -195,6 +228,12 @@
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
+    <li><a href="https://shuanglu.life/categories/1.10&#43;/">1.10&#43; (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Harbor/">Harbor (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/docker/">docker (1)</a></li>
+    
     <li><a href="https://shuanglu.life/categories/openssl/">openssl (1)</a></li>
     
     <li><a href="https://shuanglu.life/categories/web/">web (1)</a></li>
@@ -206,13 +245,19 @@
         <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
+    <a href="https://shuanglu.life/tags/docker/">docker</a>
+    
     <a href="https://shuanglu.life/tags/nginx/">nginx</a>
     
     <a href="https://shuanglu.life/tags/%E4%BC%98%E5%8C%96/">优化</a>
     
+    <a href="https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/">升级错误</a>
+    
     <a href="https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/">证书</a>
     
     <a href="https://shuanglu.life/tags/%E8%BD%AC%E6%8D%A2/">转换</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/">镜像仓库</a>
     
 </div>
     </section>

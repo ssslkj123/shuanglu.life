@@ -2,22 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://shuanglu.life/categories/1.10&#43;/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/docker/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/docker/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/Harbor/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/post/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</loc>
+    <lastmod>2021-07-05T18:51:40+08:00</lastmod>
+  </url><url>
     <loc>https://shuanglu.life/post/20200826%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</loc>
     <lastmod>2021-07-05T17:33:46+08:00</lastmod>
   </url><url>
-    <loc>https://shuanglu.life/categories/</loc>
-    <lastmod>2021-07-05T17:33:46+08:00</lastmod>
-  </url><url>
     <loc>https://shuanglu.life/categories/openssl/</loc>
-    <lastmod>2021-07-05T17:33:46+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/post/</loc>
-    <lastmod>2021-07-05T17:33:46+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/</loc>
-    <lastmod>2021-07-05T17:33:46+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/tags/</loc>
     <lastmod>2021-07-05T17:33:46+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/</loc>
