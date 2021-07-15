@@ -6,7 +6,25 @@
     <description>Recent content in Categories on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 05 Jul 2021 18:51:40 +0800</lastBuildDate><atom:link href="https://shuanglu.life/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Jul 2021 13:03:24 +0800</lastBuildDate><atom:link href="https://shuanglu.life/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux</title>
+      <link>https://shuanglu.life/categories/Linux/</link>
+      <pubDate>Thu, 15 Jul 2021 13:03:24 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/categories/Linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://shuanglu.life/categories/Kubernetes/</link>
+      <pubDate>Thu, 08 Jul 2021 15:32:48 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/categories/Kubernetes/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>1.10&#43;</title>
       <link>https://shuanglu.life/categories/1.10&#43;/</link>

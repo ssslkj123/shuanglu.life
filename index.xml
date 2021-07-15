@@ -6,7 +6,25 @@
     <description>Recent content on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 05 Jul 2021 18:51:40 +0800</lastBuildDate><atom:link href="https://shuanglu.life/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Jul 2021 13:03:24 +0800</lastBuildDate><atom:link href="https://shuanglu.life/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20210715_hugepage和hugetlb透明大页的概念</title>
+      <link>https://shuanglu.life/post/20210715_hugepage%E5%92%8Chugetlb%E9%80%8F%E6%98%8E%E5%A4%A7%E9%A1%B5%E7%9A%84%E6%A6%82%E5%BF%B5/</link>
+      <pubDate>Thu, 15 Jul 2021 13:03:24 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/post/20210715_hugepage%E5%92%8Chugetlb%E9%80%8F%E6%98%8E%E5%A4%A7%E9%A1%B5%E7%9A%84%E6%A6%82%E5%BF%B5/</guid>
+      <description>一、关于Hugepage和hugetlb(transparent huge page) 当中涉及的概念： 1、mmu ，memory management unit ，处理VA（virtual memory address） 到PA（ physical memory address） 之间的转换，mmu是一张表，有虚拟内存到物理内存的对应关系，最核心的是Page Table（页表）</description>
+    </item>
+    
+    <item>
+      <title>20210708_kubernetes.default集群默认服务不可用问题处理</title>
+      <link>https://shuanglu.life/post/20210708_kubernetes.default%E9%9B%86%E7%BE%A4%E9%BB%98%E8%AE%A4%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/</link>
+      <pubDate>Thu, 08 Jul 2021 15:32:48 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/post/20210708_kubernetes.default%E9%9B%86%E7%BE%A4%E9%BB%98%E8%AE%A4%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/</guid>
+      <description>起因： 升级集群从1.15.4-&amp;gt;1.16.8过程当中发现再default命名空间下的kubernetes服务出现随机性不可访问的问题，错误提示 Failed connect to 10.254.0.1:443; Connection refused 该问题导致有些通过集群kubernetes.default的服务无法与apiserver进行同行导致无法启动，如官方提供</description>
+    </item>
+    
     <item>
       <title>20210625_harbor_retention_500错误处理</title>
       <link>https://shuanglu.life/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/</link>

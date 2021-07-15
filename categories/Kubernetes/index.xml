@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on Shuanglu的博客</title>
+    <link>https://shuanglu.life/categories/Kubernetes/</link>
+    <description>Recent content in Kubernetes on Shuanglu的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 08 Jul 2021 15:32:48 +0800</lastBuildDate><atom:link href="https://shuanglu.life/categories/Kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20210708_kubernetes.default集群默认服务不可用问题处理</title>
+      <link>https://shuanglu.life/post/20210708_kubernetes.default%E9%9B%86%E7%BE%A4%E9%BB%98%E8%AE%A4%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/</link>
+      <pubDate>Thu, 08 Jul 2021 15:32:48 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/post/20210708_kubernetes.default%E9%9B%86%E7%BE%A4%E9%BB%98%E8%AE%A4%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/</guid>
+      <description>起因： 升级集群从1.15.4-&amp;gt;1.16.8过程当中发现再default命名空间下的kubernetes服务出现随机性不可访问的问题，错误提示 Failed connect to 10.254.0.1:443; Connection refused 该问题导致有些通过集群kubernetes.default的服务无法与apiserver进行同行导致无法启动，如官方提供</description>
+    </item>
+    
+  </channel>
+</rss>
