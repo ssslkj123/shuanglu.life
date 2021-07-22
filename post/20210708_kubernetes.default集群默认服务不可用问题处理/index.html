@@ -300,6 +300,30 @@ kubernetes                                               10.199.152.51:443,10.19
 <p><strong>如果配置成为<code>master-acount</code>的模式，那么kube-apiserver挂掉之后Kubernetes Endpoints不更新，导致访问kubernetes.default该默认服务无法起到高可用的情况。</strong></p>
 <p><strong>因而需要配置为&ndash;endpoint-reconciler-type=lease的模式，此时如果apiserver挂掉了会自动将endpoint信息同步更新掉。</strong></p>
 
+	    
+<div id="gitalk-container/" style="border:0" ></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css/" style="border:0" >
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js/" style="border:0" ></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '073a0ca9b80a35464ee0',
+    clientSecret: 'beffff4589b54a3b508e66aea56b1475c292f4b9',
+    repo: 'https:\/\/shuanglu.life\/',
+    owner: 'ssslkj123',
+    admin: ['ssslkj123'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+
         </div>
 
         

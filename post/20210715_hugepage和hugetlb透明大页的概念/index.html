@@ -155,6 +155,30 @@
 - madvice则表示在内存分配过程当中针对函数madvise当中int advice的类型设定为MADV_HUGEPAGE的类型进行大页内存分配
 - never 永不使用自动的透明大页分配。
 </code></pre>
+	    
+<div id="gitalk-container/" style="border:0" ></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css/" style="border:0" >
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js/" style="border:0" ></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '073a0ca9b80a35464ee0',
+    clientSecret: 'beffff4589b54a3b508e66aea56b1475c292f4b9',
+    repo: 'https:\/\/shuanglu.life\/',
+    owner: 'ssslkj123',
+    admin: ['ssslkj123'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+
         </div>
 
         

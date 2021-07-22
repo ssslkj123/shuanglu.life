@@ -852,6 +852,30 @@ https://10.199.159.38:2379, <span style="color:#099">224322237</span>
 </div><p><strong>文章参照：</strong></p>
 <p><a href="https://etcd.io/docs/v3.4/op-guide/recovery/">遇事不决参考官方文档：灾难恢复</a></p>
 
+	    
+<div id="gitalk-container/" style="border:0" ></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css/" style="border:0" >
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js/" style="border:0" ></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '073a0ca9b80a35464ee0',
+    clientSecret: 'beffff4589b54a3b508e66aea56b1475c292f4b9',
+    repo: 'https:\/\/shuanglu.life\/',
+    owner: 'ssslkj123',
+    admin: ['ssslkj123'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+
         </div>
 
         
