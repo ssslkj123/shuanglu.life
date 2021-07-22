@@ -1,0 +1,1094 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>20210719_etcd备份异地恢复操作 | Shuanglu的博客</title>
+    <meta property="og:title" content="20210719_etcd备份异地恢复操作 - Shuanglu的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2021-07-22T19:41:56&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2021-07-22T19:41:56&#43;08:00'>
+        
+    <meta name="Keywords" content="[灾难恢复 备份 恢复]">
+    <meta name="description" content="20210719_etcd备份异地恢复操作">
+        
+    <meta name="author" content="Kid">
+    <meta property="og:url" content="https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://shuanglu.life">
+                        Shuanglu的博客
+                    </a>
+                
+                <p class="description">专注于Kubernetes,Docker,容器,CloudNative等相关</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://shuanglu.life">首页</a>
+                    
+                    <a  href="https://shuanglu.life/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://shuanglu.life/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">20210719_etcd备份异地恢复操作</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2021年7月22日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/etcd'>etcd</a></span>
+            
+            <span class="meta-category"><a href='/categories/Kubernetes'>Kubernetes</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h3 id="背景">背景：</h3>
+<p>​    kubernetes集群在使用过程当中由于其承载的etcd出现性能瓶颈，因而需要将etcd的全量数据集中迁移至新的etcd集群当中，关于etcd的迁移有多种形式，因为考虑到新etcd集群与原etcd集群之间网络延迟与稳定性，因而使用了停机的全量迁移方式，经过验证停机时间可控制在5分钟之内。当然如果稳定的网络带宽与延迟的情况下可以借助使用依次添加新节点，随后摘除与踢出老节点这种方式进行etcd无停机的方式进行数据迁移。</p>
+<p>需要注意的是：本次kubernetes 的master为3节点形式进行部署。在最后阶段需要将apiserver 所使用的etcd节点地址进行全部变更。</p>
+<h3 id="一制作证书并拷贝新证书到相应新的etcd节点">一、制作证书并拷贝新证书到相应新的etcd节点</h3>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">84
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># 本次制作的证书我使用cfssl</span>
+<span style="color:#998;font-style:italic"># ca-config.json文件是生成证书的配置文件，其中有若干个&#34;profiles&#34;分别对应了生成证书的配置与有效时间，这里我使用的是myprofile01该配置。</span>
+<span style="color:#998;font-style:italic"># cat  ca-config.json</span>
+<span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#d14">&#34;signing&#34;</span>:<span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#d14">&#34;default&#34;</span>:<span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#d14">&#34;expiry&#34;</span>:<span style="color:#d14">&#34;876000h&#34;</span>
+        <span style="color:#000;font-weight:bold">}</span>,
+        <span style="color:#d14">&#34;profiles&#34;</span>:<span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#d14">&#34;myprofile01&#34;</span>:<span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#d14">&#34;usages&#34;</span>:<span style="color:#000;font-weight:bold">[</span>
+                    <span style="color:#d14">&#34;signing&#34;</span>,
+                    <span style="color:#d14">&#34;key encipherment&#34;</span>,
+                    <span style="color:#d14">&#34;server auth&#34;</span>,
+                    <span style="color:#d14">&#34;client auth&#34;</span>
+                <span style="color:#000;font-weight:bold">]</span>,
+                <span style="color:#d14">&#34;expiry&#34;</span>:<span style="color:#d14">&#34;87600h&#34;</span>
+            <span style="color:#000;font-weight:bold">}</span>,
+            <span style="color:#d14">&#34;3years&#34;</span>:<span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#d14">&#34;usages&#34;</span>:<span style="color:#000;font-weight:bold">[</span>
+                    <span style="color:#d14">&#34;signing&#34;</span>,
+                    <span style="color:#d14">&#34;key encipherment&#34;</span>,
+                    <span style="color:#d14">&#34;server auth&#34;</span>,
+                    <span style="color:#d14">&#34;client auth&#34;</span>
+                <span style="color:#000;font-weight:bold">]</span>,
+                <span style="color:#d14">&#34;expiry&#34;</span>:<span style="color:#d14">&#34;26280h&#34;</span>
+            <span style="color:#000;font-weight:bold">}</span>,
+            <span style="color:#d14">&#34;5years&#34;</span>:<span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#d14">&#34;usages&#34;</span>:<span style="color:#000;font-weight:bold">[</span>
+                    <span style="color:#d14">&#34;signing&#34;</span>,
+                    <span style="color:#d14">&#34;key encipherment&#34;</span>,
+                    <span style="color:#d14">&#34;server auth&#34;</span>,
+                    <span style="color:#d14">&#34;client auth&#34;</span>
+                <span style="color:#000;font-weight:bold">]</span>,
+                <span style="color:#d14">&#34;expiry&#34;</span>:<span style="color:#d14">&#34;43800h&#34;</span>
+            <span style="color:#000;font-weight:bold">}</span>,
+            <span style="color:#d14">&#34;kubernetes&#34;</span>:<span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#d14">&#34;usages&#34;</span>:<span style="color:#000;font-weight:bold">[</span>
+                    <span style="color:#d14">&#34;signing&#34;</span>,
+                    <span style="color:#d14">&#34;key encipherment&#34;</span>,
+                    <span style="color:#d14">&#34;server auth&#34;</span>,
+                    <span style="color:#d14">&#34;client auth&#34;</span>
+                <span style="color:#000;font-weight:bold">]</span>,
+                <span style="color:#d14">&#34;expiry&#34;</span>:<span style="color:#d14">&#34;876000h&#34;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#998;font-style:italic"># etcd证书配置的信任地址：</span>
+<span style="color:#998;font-style:italic"># etcd-csr.json的信任地址我将新旧两个集群的etcd地址均填写了进去，新集群地址为159.{36..38}。</span>
+<span style="color:#998;font-style:italic"># cat etcd-csr.json</span>
+
+<span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#d14">&#34;CN&#34;</span>: <span style="color:#d14">&#34;etcd&#34;</span>,
+  <span style="color:#d14">&#34;hosts&#34;</span>: <span style="color:#000;font-weight:bold">[</span>
+    <span style="color:#d14">&#34;127.0.0.1&#34;</span>,
+    <span style="color:#d14">&#34;10.199.136.21&#34;</span>,
+    <span style="color:#d14">&#34;10.199.136.22&#34;</span>,
+    <span style="color:#d14">&#34;10.199.136.23&#34;</span>,
+    <span style="color:#d14">&#34;10.199.159.36&#34;</span>,
+    <span style="color:#d14">&#34;10.199.159.37&#34;</span>,
+    <span style="color:#d14">&#34;10.199.159.38&#34;</span>
+  <span style="color:#000;font-weight:bold">]</span>,
+  <span style="color:#d14">&#34;key&#34;</span>: <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#d14">&#34;algo&#34;</span>: <span style="color:#d14">&#34;rsa&#34;</span>,
+    <span style="color:#d14">&#34;size&#34;</span>: <span style="color:#099">2048</span>
+  <span style="color:#000;font-weight:bold">}</span>,
+  <span style="color:#d14">&#34;names&#34;</span>: <span style="color:#000;font-weight:bold">[</span>
+    <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#d14">&#34;C&#34;</span>: <span style="color:#d14">&#34;CN&#34;</span>,
+      <span style="color:#d14">&#34;ST&#34;</span>: <span style="color:#d14">&#34;ZheJiang&#34;</span>,
+      <span style="color:#d14">&#34;L&#34;</span>: <span style="color:#d14">&#34;HangZhou&#34;</span>,
+      <span style="color:#d14">&#34;O&#34;</span>: <span style="color:#d14">&#34;k8s&#34;</span>,
+      <span style="color:#d14">&#34;OU&#34;</span>: <span style="color:#d14">&#34;System&#34;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">]</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#998;font-style:italic"># 使用cfssl命令生成etcd新地址。</span>
+<span style="color:#998;font-style:italic"># cfssl gencert -ca=/root/kubedeploy/pki/ca.pem \</span>
+  -ca-key<span style="color:#000;font-weight:bold">=</span>/root/kubedeploy/pki/ca-key.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  -config<span style="color:#000;font-weight:bold">=</span>/root/kubedeploy/pki/ca-config.json <span style="color:#d14">\
+</span><span style="color:#d14"></span>  -profile<span style="color:#000;font-weight:bold">=</span>myprofile01  etcd-csr.json | cfssljson -bare etcd
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="二配置并新建etcd-集群">二、配置并新建etcd 集群</h3>
+<p>（注：本次使用Systemd的方式进行管理并启动集群。如果使用docker 或者 kubernetes 方式进行管理原理类似。）</p>
+<p>新etcd集群3个节点服务配置：</p>
+<p>​    新建的集群<code>data-dir</code>是etcd的数据目录，当<code>initial-cluster-state</code> 为<code>new</code>时，会初始化该数据目录，否则会报错。如果为<code>existing</code>则表示该目录已经有文件，不进行初始化，需要知道的是：即使为<code>new</code>，时重启etcd当etcd发现目录下已经有数据也是不会初始化与清理所有数据的。</p>
+<p><strong>etcd01</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># systemctl cat etcd.service</span>
+
+/etc/systemd/system/etcd.service
+
+<span style="color:#000;font-weight:bold">[</span>Unit<span style="color:#000;font-weight:bold">]</span>
+<span style="color:#008080">Description</span><span style="color:#000;font-weight:bold">=</span>Etcd Server
+<span style="color:#008080">After</span><span style="color:#000;font-weight:bold">=</span>network.target
+<span style="color:#008080">After</span><span style="color:#000;font-weight:bold">=</span>network-online.target
+<span style="color:#008080">Wants</span><span style="color:#000;font-weight:bold">=</span>network-online.target
+<span style="color:#008080">Documentation</span><span style="color:#000;font-weight:bold">=</span>https://github.com/coreos
+
+<span style="color:#000;font-weight:bold">[</span>Service<span style="color:#000;font-weight:bold">]</span>
+<span style="color:#008080">Type</span><span style="color:#000;font-weight:bold">=</span>notify
+<span style="color:#008080">WorkingDirectory</span><span style="color:#000;font-weight:bold">=</span>/var/lib/etcd/
+<span style="color:#008080">ExecStart</span><span style="color:#000;font-weight:bold">=</span>/usr/k8s/bin/etcd <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --name<span style="color:#000;font-weight:bold">=</span>etcd01 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --cert-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --key-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd-key.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --peer-cert-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --peer-key-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd-key.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --trusted-ca-file<span style="color:#000;font-weight:bold">=</span>/etc/kubernetes/ssl/ca.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --peer-trusted-ca-file<span style="color:#000;font-weight:bold">=</span>/etc/kubernetes/ssl/ca.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-advertise-peer-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.36:2380 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --listen-peer-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.36:2380 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --listen-client-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.36:2379,http://127.0.0.1:2379 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --advertise-client-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.36:2379 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster-token<span style="color:#000;font-weight:bold">=</span>etcd-cluster-0 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster<span style="color:#000;font-weight:bold">=</span><span style="color:#008080">etcd01</span><span style="color:#000;font-weight:bold">=</span>https://10.199.159.36:2380,etcd02<span style="color:#000;font-weight:bold">=</span>https://10.199.159.37:2380,etcd03<span style="color:#000;font-weight:bold">=</span>https://10.199.159.38:2380 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster-state<span style="color:#000;font-weight:bold">=</span>new <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --quota-backend-bytes<span style="color:#000;font-weight:bold">=</span><span style="color:#099">137438953472</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --auto-compaction-retention<span style="color:#000;font-weight:bold">=</span><span style="color:#099">15</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --enable-pprof<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">true</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --data-dir<span style="color:#000;font-weight:bold">=</span>/var/lib/etcd <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --debug<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">false</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --v<span style="color:#000;font-weight:bold">=</span><span style="color:#099">4</span>
+<span style="color:#008080">Restart</span><span style="color:#000;font-weight:bold">=</span>on-failure
+<span style="color:#008080">RestartSec</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">5</span>
+<span style="color:#008080">LimitNOFILE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">65536</span>
+
+<span style="color:#000;font-weight:bold">[</span>Install<span style="color:#000;font-weight:bold">]</span>
+<span style="color:#008080">WantedBy</span><span style="color:#000;font-weight:bold">=</span>multi-user.target
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>etcd02</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># systemctl cat  etcd</span>
+
+<span style="color:#998;font-style:italic"># /etc/systemd/system/etcd.service</span>
+
+<span style="color:#000;font-weight:bold">[</span>Unit<span style="color:#000;font-weight:bold">]</span>
+<span style="color:#008080">Description</span><span style="color:#000;font-weight:bold">=</span>Etcd Server
+<span style="color:#008080">After</span><span style="color:#000;font-weight:bold">=</span>network.target
+<span style="color:#008080">After</span><span style="color:#000;font-weight:bold">=</span>network-online.target
+<span style="color:#008080">Wants</span><span style="color:#000;font-weight:bold">=</span>network-online.target
+<span style="color:#008080">Documentation</span><span style="color:#000;font-weight:bold">=</span>https://github.com/coreos
+
+<span style="color:#000;font-weight:bold">[</span>Service<span style="color:#000;font-weight:bold">]</span>
+<span style="color:#008080">Type</span><span style="color:#000;font-weight:bold">=</span>notify
+<span style="color:#008080">WorkingDirectory</span><span style="color:#000;font-weight:bold">=</span>/var/lib/etcd/
+<span style="color:#008080">ExecStart</span><span style="color:#000;font-weight:bold">=</span>/usr/k8s/bin/etcd <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --name<span style="color:#000;font-weight:bold">=</span>etcd02 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --cert-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --key-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd-key.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --peer-cert-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --peer-key-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd-key.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --trusted-ca-file<span style="color:#000;font-weight:bold">=</span>/etc/kubernetes/ssl/ca.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --peer-trusted-ca-file<span style="color:#000;font-weight:bold">=</span>/etc/kubernetes/ssl/ca.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-advertise-peer-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.37:2380 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --listen-peer-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.37:2380 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --listen-client-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.37:2379,http://127.0.0.1:2379 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --advertise-client-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.37:2379 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster-token<span style="color:#000;font-weight:bold">=</span>etcd-cluster-0 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster<span style="color:#000;font-weight:bold">=</span><span style="color:#008080">etcd01</span><span style="color:#000;font-weight:bold">=</span>https://10.199.159.36:2380,etcd02<span style="color:#000;font-weight:bold">=</span>https://10.199.159.37:2380,etcd03<span style="color:#000;font-weight:bold">=</span>https://10.199.159.38:2380 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster-state<span style="color:#000;font-weight:bold">=</span>new <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --quota-backend-bytes<span style="color:#000;font-weight:bold">=</span><span style="color:#099">137438953472</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --auto-compaction-retention<span style="color:#000;font-weight:bold">=</span><span style="color:#099">15</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --enable-pprof<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">true</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --data-dir<span style="color:#000;font-weight:bold">=</span>/var/lib/etcd <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --debug<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">false</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --v<span style="color:#000;font-weight:bold">=</span><span style="color:#099">4</span>
+<span style="color:#008080">Restart</span><span style="color:#000;font-weight:bold">=</span>on-failure
+<span style="color:#008080">RestartSec</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">5</span>
+<span style="color:#008080">LimitNOFILE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">65536</span>
+
+<span style="color:#000;font-weight:bold">[</span>Install<span style="color:#000;font-weight:bold">]</span>
+<span style="color:#008080">WantedBy</span><span style="color:#000;font-weight:bold">=</span>multi-user.target
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>etcd03</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># systemctl cat  etcd</span>
+
+<span style="color:#998;font-style:italic"># /etc/systemd/system/etcd.service</span>
+
+<span style="color:#000;font-weight:bold">[</span>Unit<span style="color:#000;font-weight:bold">]</span>
+<span style="color:#008080">Description</span><span style="color:#000;font-weight:bold">=</span>Etcd Server
+<span style="color:#008080">After</span><span style="color:#000;font-weight:bold">=</span>network.target
+<span style="color:#008080">After</span><span style="color:#000;font-weight:bold">=</span>network-online.target
+<span style="color:#008080">Wants</span><span style="color:#000;font-weight:bold">=</span>network-online.target
+<span style="color:#008080">Documentation</span><span style="color:#000;font-weight:bold">=</span>https://github.com/coreos
+
+<span style="color:#000;font-weight:bold">[</span>Service<span style="color:#000;font-weight:bold">]</span>
+<span style="color:#008080">Type</span><span style="color:#000;font-weight:bold">=</span>notify
+<span style="color:#008080">WorkingDirectory</span><span style="color:#000;font-weight:bold">=</span>/var/lib/etcd/
+<span style="color:#008080">ExecStart</span><span style="color:#000;font-weight:bold">=</span>/usr/k8s/bin/etcd <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --name<span style="color:#000;font-weight:bold">=</span>etcd03 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --cert-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --key-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd-key.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --peer-cert-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --peer-key-file<span style="color:#000;font-weight:bold">=</span>/etc/etcd/ssl/etcd-key.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --trusted-ca-file<span style="color:#000;font-weight:bold">=</span>/etc/kubernetes/ssl/ca.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --peer-trusted-ca-file<span style="color:#000;font-weight:bold">=</span>/etc/kubernetes/ssl/ca.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-advertise-peer-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.38:2380 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --listen-peer-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.38:2380 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --listen-client-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.38:2379,http://127.0.0.1:2379 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --advertise-client-urls<span style="color:#000;font-weight:bold">=</span>https://10.199.159.38:2379 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster-token<span style="color:#000;font-weight:bold">=</span>etcd-cluster-0 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster<span style="color:#000;font-weight:bold">=</span><span style="color:#008080">etcd01</span><span style="color:#000;font-weight:bold">=</span>https://10.199.159.36:2380,etcd02<span style="color:#000;font-weight:bold">=</span>https://10.199.159.37:2380,etcd03<span style="color:#000;font-weight:bold">=</span>https://10.199.159.38:2380 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster-state<span style="color:#000;font-weight:bold">=</span>new <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --quota-backend-bytes<span style="color:#000;font-weight:bold">=</span><span style="color:#099">137438953472</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --auto-compaction-retention<span style="color:#000;font-weight:bold">=</span><span style="color:#099">15</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --enable-pprof<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">true</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --data-dir<span style="color:#000;font-weight:bold">=</span>/var/lib/etcd <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --debug<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">false</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --v<span style="color:#000;font-weight:bold">=</span><span style="color:#099">4</span>
+<span style="color:#008080">Restart</span><span style="color:#000;font-weight:bold">=</span>on-failure
+<span style="color:#008080">RestartSec</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">5</span>
+<span style="color:#008080">LimitNOFILE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">65536</span>
+
+<span style="color:#000;font-weight:bold">[</span>Install<span style="color:#000;font-weight:bold">]</span>
+<span style="color:#008080">WantedBy</span><span style="color:#000;font-weight:bold">=</span>multi-user.target
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>建议：在新建的etcd集群当中可以先进行一次集群初始化，并查看节点建立状态，与证书是否正常，并对新建立的etcd集群做一次bench 操作，跑一次性能基线</strong>。</p>
+<p><strong>etcd 自带了check perf 工具：</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl  --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379 check perf --load=&#34;l&#34; --auto-compact=true --auto-defrag=true</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="三备份原etcd集群数据">三、备份原Etcd集群数据</h3>
+<p>​     为保证数据的一致性，此时在备份与还原<code>etcd</code>期间需要将<code>kubernetes</code>集群的<code>api-server</code>的 停止对外服务。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># systemctl stop kube-apiserver.service</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="31对原etcd集群进行数据备份用于之后还原">3.1、对原etcd集群进行数据备份，用于之后还原。</h4>
+<p>本次使用脚本方式进行备份，使用脚本备份：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># cat etcd_backup.sh</span>
+
+<span style="color:#998;font-style:italic">#!/bin/bash</span>
+mkdir -p /root/kubedeploy/etcd_backup/
+date;
+<span style="color:#008080">CACERT</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;/etc/kubernetes/ssl/ca.pem&#34;</span>
+<span style="color:#008080">CERT</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;/etc/kubernetes/ssl/kubernetes.pem&#34;</span>
+<span style="color:#008080">EKY</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;/etc/kubernetes/ssl/kubernetes-key.pem&#34;</span>
+<span style="color:#008080">ENDPOINTS</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;10.199.136.21:2379&#34;</span>
+
+<span style="color:#008080">ETCDCTL_API</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">3</span> etcdctl <span style="color:#d14">\
+</span><span style="color:#d14"></span>--cacert<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">CACERT</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span> --cert<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">CERT</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span> --key<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">EKY</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>--endpoints<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">${</span><span style="color:#008080">ENDPOINTS</span><span style="color:#d14">}</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>snapshot save /root/kubedeploy/etcd_backup/etcd-snapshot-<span style="color:#d14">`</span>date +%Y%m%d<span style="color:#d14">`</span>.db
+
+<span style="color:#998;font-style:italic"># 备份保留30天</span>
+<span style="color:#998;font-style:italic"># find ./ -name *.db -mtime +30 -exec rm -f {} \;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>拷贝<code>/root/etcd_backup/etcd-snapshot-20210719.db</code>该文件至新etcd集群的<code>/root/kubedeploy/etcd_backup/</code> 目录下。</p>
+<h4 id="32恢复数据">3.2、恢复数据</h4>
+<p>如果报：<code>Error: data-dir &quot;/var/lib/etcd&quot; exists&quot;</code> 则需要手动删除 该目录以及目录及其下所有文件 <code>&quot;rm -rf /var/lib/etcd&quot;</code></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># etcd01 机器上操作</span>
+
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl snapshot restore /root/etcd_backup/etcd-snapshot-20210719.db \</span>
+  --name etcd01 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster <span style="color:#d14">&#34;etcd01=https://10.199.159.36:2380,etcd02=https://10.199.159.37:2380,etcd03=https://10.199.159.38:2380&#34;</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster-token etcd-cluster-0 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-advertise-peer-urls https://10.199.159.36:2380  <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --data-dir<span style="color:#000;font-weight:bold">=</span>/var/lib/etcd
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># etcd02 机器上操作</span>
+
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl snapshot restore /root/etcd_backup/etcd-snapshot-20210719.db  \</span>
+  --name etcd02 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster <span style="color:#d14">&#34;etcd01=https://10.199.159.36:2380,etcd02=https://10.199.159.37:2380,etcd03=https://10.199.159.38:2380&#34;</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster-token etcd-cluster-0 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-advertise-peer-urls https://10.199.159.37:2380  <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --data-dir<span style="color:#000;font-weight:bold">=</span>/var/lib/etcd
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># etcd03 机器上操作</span>
+
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl snapshot restore /root/etcd_backup/etcd-snapshot-20210719.db  \</span>
+  --name etcd03 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster <span style="color:#d14">&#34;etcd01=https://10.199.159.36:2380,etcd02=https://10.199.159.37:2380,etcd03=https://10.199.159.38:2380&#34;</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-cluster-token etcd-cluster-0 <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --initial-advertise-peer-urls https://10.199.159.38:2380  <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --data-dir<span style="color:#000;font-weight:bold">=</span>/var/lib/etcd
+</code></pre></td></tr></table>
+</div>
+</div><p>在该还原配置当中需要提及的注意事项：</p>
+<ul>
+<li>1)<code>name</code>需要与Systemd管理的etcd服务相匹配否则会出现无法启动的问题。</li>
+<li>2)<code>initial-cluster-token</code>是一个etcd集群通信令牌。需要集群节点一致。</li>
+<li>3)<code>data-dir</code> 需要确保目录不存在。如果已经存在则删除。</li>
+</ul>
+<h3 id="四最后">四、最后</h3>
+<h4 id="41所有etcd节点启动etcd集群">4.1所有etcd节点启动etcd集群</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># systemctl start etcd &amp;&amp; system enable etcd &amp;&amp; systemd status etcd</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="42-etcd集群常见的管理命令">4.2 etcd集群常见的管理命令</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># 查看etcd节点与集群状态常用命令：</span>
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl  --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379 member list --write-out=table</span>
++------------------+---------+--------+----------------------------+----------------------------+------------+
+|        ID        | STATUS  |  NAME  |         PEER ADDRS         |        CLIENT ADDRS        | IS LEARNER |
++------------------+---------+--------+----------------------------+----------------------------+------------+
+|  f88d448e745d642 | started | etcd03 | https://10.199.159.38:2380 | https://10.199.159.38:2379 |      <span style="color:#0086b3">false</span> |
+| 80e78076af5885ea | started | etcd02 | https://10.199.159.37:2380 | https://10.199.159.37:2379 |      <span style="color:#0086b3">false</span> |
+| bcfccc6c28807a2a | started | etcd01 | https://10.199.159.36:2380 | https://10.199.159.36:2379 |      <span style="color:#0086b3">false</span> |
++------------------+---------+--------+----------------------------+----------------------------+------------+
+
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl  --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379  endpoint status  --write-out=table</span>
++----------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+|          ENDPOINT          |        ID        | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX | RAFT APPLIED INDEX | ERRORS |
++----------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+| https://10.199.159.36:2379 | bcfccc6c28807a2a |  3.4.14 |  <span style="color:#099">339</span> MB |      <span style="color:#0086b3">true</span> |      <span style="color:#0086b3">false</span> |        <span style="color:#099">10</span> |    <span style="color:#099">1866269</span> |            <span style="color:#099">1866269</span> |        |
+| https://10.199.159.37:2379 | 80e78076af5885ea |  3.4.14 |  <span style="color:#099">339</span> MB |     <span style="color:#0086b3">false</span> |      <span style="color:#0086b3">false</span> |        <span style="color:#099">10</span> |    <span style="color:#099">1866269</span> |            <span style="color:#099">1866269</span> |        |
+| https://10.199.159.38:2379 |  f88d448e745d642 |  3.4.14 |  <span style="color:#099">339</span> MB |     <span style="color:#0086b3">false</span> |      <span style="color:#0086b3">false</span> |        <span style="color:#099">10</span> |    <span style="color:#099">1866269</span> |            <span style="color:#099">1866269</span> |        |
++----------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl  --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379  endpoint health   --write-out=table</span>
++----------------------------+--------+-------------+-------+
+|          ENDPOINT          | HEALTH |    TOOK     | ERROR |
++----------------------------+--------+-------------+-------+
+| https://10.199.159.36:2379 |   <span style="color:#0086b3">true</span> | 11.811307ms |       |
+| https://10.199.159.37:2379 |   <span style="color:#0086b3">true</span> | 11.771516ms |       |
+| https://10.199.159.38:2379 |   <span style="color:#0086b3">true</span> | 12.811964ms |       |
++----------------------------+--------+-------------+-------+
+
+<span style="color:#998;font-style:italic"># 查看当前所有的键信息</span>
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379 get &#34;&#34; --prefix=true --keys-only  |head</span>
+/calico/ipam/v2/assignment/ipv4/block/172.30.10.192-26
+
+/calico/ipam/v2/assignment/ipv4/block/172.30.11.0-26
+
+/calico/ipam/v2/assignment/ipv4/block/172.30.12.128-26
+
+/calico/ipam/v2/assignment/ipv4/block/172.30.12.192-26
+
+/calico/ipam/v2/assignment/ipv4/block/172.30.124.128-26
+
+
+<span style="color:#998;font-style:italic"># 查看所有键的值</span>
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379 get &#34;&#34; --prefix=true </span>
+
+<span style="color:#998;font-style:italic"># 查看/registry/pods/ 该目录下的所有键值</span>
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379 get /registry/pods/ --prefix --keys-only</span>
+
+<span style="color:#998;font-style:italic"># 查看/registry/pods/ 该目录下的键值信息</span>
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379 get /registry/pods/ --prefix</span>
+
+<span style="color:#998;font-style:italic">#  查看集群KV的历史信息，需要相同才能保证集群的一致性</span>
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379 endpoint hashkv</span>
+https://10.199.159.36:2379, <span style="color:#099">224322237</span>
+https://10.199.159.37:2379, <span style="color:#099">224322237</span>
+https://10.199.159.38:2379, <span style="color:#099">224322237</span>
+
+<span style="color:#998;font-style:italic"># 查看集群是否有不健康或者报警</span>
+<span style="color:#998;font-style:italic"># ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem   --endpoints=https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379 alarm list</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="43修改apiserver服务所对接etcd的端点信息并重新启动apiserver">4.3修改ApiServer服务所对接etcd的端点信息，并重新启动apiserver。</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#998;font-style:italic"># cat  /etc/systemd/system/kube-apiserver.service</span>
+
+...略
+  --etcd-cafile<span style="color:#000;font-weight:bold">=</span>/etc/kubernetes/ssl/ca.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --etcd-certfile<span style="color:#000;font-weight:bold">=</span>/etc/kubernetes/ssl/etcd.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --etcd-keyfile<span style="color:#000;font-weight:bold">=</span>/etc/kubernetes/ssl/etcd-key.pem <span style="color:#d14">\
+</span><span style="color:#d14"></span>  --etcd-servers<span style="color:#000;font-weight:bold">=</span>https://10.199.159.36:2379,https://10.199.159.37:2379,https://10.199.159.38:2379 <span style="color:#d14">\
+</span><span style="color:#d14"></span>...略
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>文章参照：</strong></p>
+<p><a href="https://etcd.io/docs/v3.4/op-guide/recovery/">遇事不决参考官方文档：灾难恢复</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="https://shuanglu.life">Kid</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/">https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/20210708_kubernetes.default%E9%9B%86%E7%BE%A4%E9%BB%98%E8%AE%A4%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/">20210708_kubernetes.default集群默认服务不可用问题处理</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/k8s'>k8s</a></li>
+                
+                <li><a href='/tags/etcd'>etcd</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="https://shuanglu.life">Shuanglu的博客 By Kid</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://shuanglu.life/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://shuanglu.life">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/" title="20210719_etcd备份异地恢复操作">20210719_etcd备份异地恢复操作</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20210715_hugepage%E5%92%8Chugetlb%E9%80%8F%E6%98%8E%E5%A4%A7%E9%A1%B5%E7%9A%84%E6%A6%82%E5%BF%B5/" title="20210715_hugepage和hugetlb透明大页的概念">20210715_hugepage和hugetlb透明大页的概念</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20210708_kubernetes.default%E9%9B%86%E7%BE%A4%E9%BB%98%E8%AE%A4%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/" title="20210708_kubernetes.default集群默认服务不可用问题处理">20210708_kubernetes.default集群默认服务不可用问题处理</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/" title="20210625_harbor_retention_500错误处理">20210625_harbor_retention_500错误处理</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/" title="20200826_证书转换">20200826_证书转换</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20201208_nginx%E7%BC%93%E5%86%B2%E5%8C%BA%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96/" title="20201208_nginx缓冲区参数配置优化">20201208_nginx缓冲区参数配置优化</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://shuanglu.life/categories/1.10&#43;/">1.10&#43; (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Harbor/">Harbor (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Kubernetes/">Kubernetes (2)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Linux/">Linux (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/docker/">docker (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/etcd/">etcd (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/openssl/">openssl (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/web/">web (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://shuanglu.life/tags/docker/">docker</a>
+    
+    <a href="https://shuanglu.life/tags/etcd/">etcd</a>
+    
+    <a href="https://shuanglu.life/tags/k8s/">k8s</a>
+    
+    <a href="https://shuanglu.life/tags/nginx/">nginx</a>
+    
+    <a href="https://shuanglu.life/tags/%E4%BC%98%E5%8C%96/">优化</a>
+    
+    <a href="https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/">升级错误</a>
+    
+    <a href="https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/">证书</a>
+    
+    <a href="https://shuanglu.life/tags/%E8%BD%AC%E6%8D%A2/">转换</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/">通用知识</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/">镜像仓库</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%97%AE%E9%A2%98/">问题</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://ssslkj123.github.io" title="Shuanglu的博客">Shuanglu的博客</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="http://docs.kubernetes.org.cn/" title="kubernetes相关指南">Kubernetes指南</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://shuanglu.life/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

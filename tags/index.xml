@@ -6,22 +6,31 @@
     <description>Recent content in Tags on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 15 Jul 2021 13:03:24 +0800</lastBuildDate><atom:link href="https://shuanglu.life/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 22 Jul 2021 19:41:56 +0800</lastBuildDate><atom:link href="https://shuanglu.life/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>通用知识</title>
-      <link>https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/</link>
-      <pubDate>Thu, 15 Jul 2021 13:03:24 +0800</pubDate>
+      <title>etcd</title>
+      <link>https://shuanglu.life/tags/etcd/</link>
+      <pubDate>Thu, 22 Jul 2021 19:41:56 +0800</pubDate>
       
-      <guid>https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/</guid>
+      <guid>https://shuanglu.life/tags/etcd/</guid>
       <description></description>
     </item>
     
     <item>
       <title>k8s</title>
       <link>https://shuanglu.life/tags/k8s/</link>
-      <pubDate>Thu, 08 Jul 2021 15:32:48 +0800</pubDate>
+      <pubDate>Thu, 22 Jul 2021 19:41:56 +0800</pubDate>
       
       <guid>https://shuanglu.life/tags/k8s/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>通用知识</title>
+      <link>https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Thu, 15 Jul 2021 13:03:24 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/</guid>
       <description></description>
     </item>
     

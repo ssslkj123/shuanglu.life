@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>etcd on Shuanglu的博客</title>
+    <link>https://shuanglu.life/categories/etcd/</link>
+    <description>Recent content in etcd on Shuanglu的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 22 Jul 2021 19:41:56 +0800</lastBuildDate><atom:link href="https://shuanglu.life/categories/etcd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20210719_etcd备份异地恢复操作</title>
+      <link>https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Thu, 22 Jul 2021 19:41:56 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/</guid>
+      <description>背景： ​ kubernetes集群在使用过程当中由于其承载的etcd出现性能瓶颈，因而需要将etcd的全量数据集中迁移至新的etcd集群当中，关于etcd的迁移有多种形式，因为考虑到新etcd集群与原etcd集群之间网络延迟与稳定性，因而使用了停机的全量迁移方式，经过验证停机时间可</description>
+    </item>
+    
+  </channel>
+</rss>
