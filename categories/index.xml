@@ -2,80 +2,80 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Shuanglu的博客</title>
-    <link>https://shuanglu.life/categories/</link>
+    <link>https://ssslkj123.github.io/categories/</link>
     <description>Recent content in Categories on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 22 Jul 2021 19:41:56 +0800</lastBuildDate><atom:link href="https://shuanglu.life/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 22 Jul 2021 19:41:56 +0800</lastBuildDate><atom:link href="https://ssslkj123.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>etcd</title>
-      <link>https://shuanglu.life/categories/etcd/</link>
+      <link>https://ssslkj123.github.io/categories/etcd/</link>
       <pubDate>Thu, 22 Jul 2021 19:41:56 +0800</pubDate>
       
-      <guid>https://shuanglu.life/categories/etcd/</guid>
+      <guid>https://ssslkj123.github.io/categories/etcd/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Kubernetes</title>
-      <link>https://shuanglu.life/categories/Kubernetes/</link>
+      <link>https://ssslkj123.github.io/categories/Kubernetes/</link>
       <pubDate>Thu, 22 Jul 2021 19:41:56 +0800</pubDate>
       
-      <guid>https://shuanglu.life/categories/Kubernetes/</guid>
+      <guid>https://ssslkj123.github.io/categories/Kubernetes/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Linux</title>
-      <link>https://shuanglu.life/categories/Linux/</link>
+      <link>https://ssslkj123.github.io/categories/Linux/</link>
       <pubDate>Thu, 15 Jul 2021 13:03:24 +0800</pubDate>
       
-      <guid>https://shuanglu.life/categories/Linux/</guid>
+      <guid>https://ssslkj123.github.io/categories/Linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>1.10&#43;</title>
-      <link>https://shuanglu.life/categories/1.10&#43;/</link>
+      <link>https://ssslkj123.github.io/categories/1.10&#43;/</link>
       <pubDate>Mon, 05 Jul 2021 18:51:40 +0800</pubDate>
       
-      <guid>https://shuanglu.life/categories/1.10&#43;/</guid>
+      <guid>https://ssslkj123.github.io/categories/1.10&#43;/</guid>
       <description></description>
     </item>
     
     <item>
       <title>docker</title>
-      <link>https://shuanglu.life/categories/docker/</link>
+      <link>https://ssslkj123.github.io/categories/docker/</link>
       <pubDate>Mon, 05 Jul 2021 18:51:40 +0800</pubDate>
       
-      <guid>https://shuanglu.life/categories/docker/</guid>
+      <guid>https://ssslkj123.github.io/categories/docker/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Harbor</title>
-      <link>https://shuanglu.life/categories/Harbor/</link>
+      <link>https://ssslkj123.github.io/categories/Harbor/</link>
       <pubDate>Mon, 05 Jul 2021 18:51:40 +0800</pubDate>
       
-      <guid>https://shuanglu.life/categories/Harbor/</guid>
+      <guid>https://ssslkj123.github.io/categories/Harbor/</guid>
       <description></description>
     </item>
     
     <item>
       <title>openssl</title>
-      <link>https://shuanglu.life/categories/openssl/</link>
+      <link>https://ssslkj123.github.io/categories/openssl/</link>
       <pubDate>Mon, 05 Jul 2021 17:33:46 +0800</pubDate>
       
-      <guid>https://shuanglu.life/categories/openssl/</guid>
+      <guid>https://ssslkj123.github.io/categories/openssl/</guid>
       <description></description>
     </item>
     
     <item>
       <title>web</title>
-      <link>https://shuanglu.life/categories/web/</link>
+      <link>https://ssslkj123.github.io/categories/web/</link>
       <pubDate>Mon, 05 Jul 2021 14:25:25 +0800</pubDate>
       
-      <guid>https://shuanglu.life/categories/web/</guid>
+      <guid>https://ssslkj123.github.io/categories/web/</guid>
       <description></description>
     </item>
     

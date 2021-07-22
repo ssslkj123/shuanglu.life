@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Linux on Shuanglu的博客</title>
-    <link>https://shuanglu.life/categories/Linux/</link>
+    <link>https://ssslkj123.github.io/categories/Linux/</link>
     <description>Recent content in Linux on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 15 Jul 2021 13:03:24 +0800</lastBuildDate><atom:link href="https://shuanglu.life/categories/Linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Jul 2021 13:03:24 +0800</lastBuildDate><atom:link href="https://ssslkj123.github.io/categories/Linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20210715_hugepage和hugetlb透明大页的概念</title>
-      <link>https://shuanglu.life/post/20210715_hugepage%E5%92%8Chugetlb%E9%80%8F%E6%98%8E%E5%A4%A7%E9%A1%B5%E7%9A%84%E6%A6%82%E5%BF%B5/</link>
+      <link>https://ssslkj123.github.io/post/20210715_hugepage%E5%92%8Chugetlb%E9%80%8F%E6%98%8E%E5%A4%A7%E9%A1%B5%E7%9A%84%E6%A6%82%E5%BF%B5/</link>
       <pubDate>Thu, 15 Jul 2021 13:03:24 +0800</pubDate>
       
-      <guid>https://shuanglu.life/post/20210715_hugepage%E5%92%8Chugetlb%E9%80%8F%E6%98%8E%E5%A4%A7%E9%A1%B5%E7%9A%84%E6%A6%82%E5%BF%B5/</guid>
+      <guid>https://ssslkj123.github.io/post/20210715_hugepage%E5%92%8Chugetlb%E9%80%8F%E6%98%8E%E5%A4%A7%E9%A1%B5%E7%9A%84%E6%A6%82%E5%BF%B5/</guid>
       <description>一、关于Hugepage和hugetlb(transparent huge page) 当中涉及的概念： 1、mmu ，memory management unit ，处理VA（virtual memory address） 到PA（ physical memory address） 之间的转换，mmu是一张表，有虚拟内存到物理内存的对应关系，最核心的是Page Table（页表）</description>
     </item>
     
