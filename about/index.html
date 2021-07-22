@@ -112,13 +112,12 @@
 <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
 <script type="text/javascript">
       var gitalk = new Gitalk({
-        id: window.location.pathname,
         clientID: '9bbccf93efbc67caca32',
         clientSecret: '208da9c1b3eccad0b7ca35b2faa27390e4982e64',
         repo: 'ssslkj123.github.io',
         owner: 'ssslkj123',
         admin: 'ssslkj123',
-        id: location.pathname, 
+        id: md5(location.pathname), 
         distractionFreeMode: false 
       });
      (function() {
