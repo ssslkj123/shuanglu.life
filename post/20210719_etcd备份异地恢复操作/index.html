@@ -103,6 +103,7 @@
         
         
         <div class="post-content">
+
             <h3 id="背景">背景：</h3>
 <p>​    kubernetes集群在使用过程当中由于其承载的etcd出现性能瓶颈，因而需要将etcd的全量数据集中迁移至新的etcd集群当中，关于etcd的迁移有多种形式，因为考虑到新etcd集群与原etcd集群之间网络延迟与稳定性，因而使用了停机的全量迁移方式，经过验证停机时间可控制在5分钟之内。当然如果稳定的网络带宽与延迟的情况下可以借助使用依次添加新节点，随后摘除与踢出老节点这种方式进行etcd无停机的方式进行数据迁移。</p>
 <p>需要注意的是：本次kubernetes 的master为3节点形式进行部署。在最后阶段需要将apiserver 所使用的etcd节点地址进行全部变更。</p>
@@ -852,6 +853,7 @@ https://10.199.159.38:2379, <span style="color:#099">224322237</span>
 </div><p><strong>文章参照：</strong></p>
 <p><a href="https://etcd.io/docs/v3.4/op-guide/recovery/">遇事不决参考官方文档：灾难恢复</a></p>
 
+
 	    
 <div id="gitalk-container/" style="border:0" ></div>
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css/" style="border:0" >
@@ -860,7 +862,7 @@ https://10.199.159.38:2379, <span style="color:#099">224322237</span>
   const gitalk = new Gitalk({
     clientID: '073a0ca9b80a35464ee0',
     clientSecret: 'beffff4589b54a3b508e66aea56b1475c292f4b9',
-    repo: 'https:\/\/shuanglu.life\/',
+    repo: 'shuanglu.life',
     owner: 'ssslkj123',
     admin: ['ssslkj123'],
     id: location.pathname, 
@@ -874,6 +876,7 @@ https://10.199.159.38:2379, <span style="color:#099">224322237</span>
     gitalk.render('gitalk-container');
   })();
 </script>
+
 
 
         </div>
@@ -964,6 +967,7 @@ https://10.199.159.38:2379, <span style="color:#099">224322237</span>
       </script>
     </div>
     
+
 </div>
 
                     <footer id="footer">

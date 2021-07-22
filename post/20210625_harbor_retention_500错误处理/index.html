@@ -105,6 +105,7 @@
         
         
         <div class="post-content">
+
             <h2 id="背景">背景</h2>
 <p>harbor 1.9.X 升级到1.10.X之后使用项目当中的tag保留功能会有bug，无法进行镜像的删除，并且也无法删除曾经创建的保留规则。如果需要进行tag保留功能的使用，需要手动将原有的tag保留规则删除后再重新创建，即可恢复。</p>
 <p>进入postgresql的 容器</p>
@@ -261,6 +262,7 @@ DROP TABLE IF EXISTS backup_tbl;
 \c hello2;
 DROP DATABASE IF EXISTS hello;
 </code></pre>
+
 	    
 <div id="gitalk-container/" style="border:0" ></div>
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css/" style="border:0" >
@@ -269,7 +271,7 @@ DROP DATABASE IF EXISTS hello;
   const gitalk = new Gitalk({
     clientID: '073a0ca9b80a35464ee0',
     clientSecret: 'beffff4589b54a3b508e66aea56b1475c292f4b9',
-    repo: 'https:\/\/shuanglu.life\/',
+    repo: 'shuanglu.life',
     owner: 'ssslkj123',
     admin: ['ssslkj123'],
     id: location.pathname, 
@@ -283,6 +285,7 @@ DROP DATABASE IF EXISTS hello;
     gitalk.render('gitalk-container');
   })();
 </script>
+
 
 
         </div>
@@ -366,6 +369,7 @@ DROP DATABASE IF EXISTS hello;
       </script>
     </div>
     
+
 </div>
 
                     <footer id="footer">

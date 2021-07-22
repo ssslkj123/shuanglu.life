@@ -101,6 +101,7 @@
         
         
         <div class="post-content">
+
             <h3 id="起因">起因：</h3>
 <p>升级集群从1.15.4-&gt;1.16.8过程当中发现再default命名空间下的kubernetes服务出现随机性不可访问的问题，错误提示 <code>Failed connect to 10.254.0.1:443; Connection refused</code></p>
 <p>该问题导致有些通过集群<code>kubernetes.default</code>的服务无法与apiserver进行同行导致无法启动，如官方提供的fluentd daemonset 启动报错：</p>
@@ -300,6 +301,7 @@ kubernetes                                               10.199.152.51:443,10.19
 <p><strong>如果配置成为<code>master-acount</code>的模式，那么kube-apiserver挂掉之后Kubernetes Endpoints不更新，导致访问kubernetes.default该默认服务无法起到高可用的情况。</strong></p>
 <p><strong>因而需要配置为&ndash;endpoint-reconciler-type=lease的模式，此时如果apiserver挂掉了会自动将endpoint信息同步更新掉。</strong></p>
 
+
 	    
 <div id="gitalk-container/" style="border:0" ></div>
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css/" style="border:0" >
@@ -308,7 +310,7 @@ kubernetes                                               10.199.152.51:443,10.19
   const gitalk = new Gitalk({
     clientID: '073a0ca9b80a35464ee0',
     clientSecret: 'beffff4589b54a3b508e66aea56b1475c292f4b9',
-    repo: 'https:\/\/shuanglu.life\/',
+    repo: 'shuanglu.life',
     owner: 'ssslkj123',
     admin: ['ssslkj123'],
     id: location.pathname, 
@@ -322,6 +324,7 @@ kubernetes                                               10.199.152.51:443,10.19
     gitalk.render('gitalk-container');
   })();
 </script>
+
 
 
         </div>
@@ -403,6 +406,7 @@ kubernetes                                               10.199.152.51:443,10.19
       </script>
     </div>
     
+
 </div>
 
                     <footer id="footer">
