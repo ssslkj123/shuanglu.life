@@ -6,7 +6,16 @@
     <description>Recent content in Harbor on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 05 Jul 2021 18:51:40 +0800</lastBuildDate><atom:link href="https://shuanglu.life/categories/Harbor/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 01 Aug 2021 15:51:44 +0800</lastBuildDate><atom:link href="https://shuanglu.life/categories/Harbor/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20210729_harbor对接S3对象存储</title>
+      <link>https://shuanglu.life/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/</link>
+      <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
+      
+      <guid>https://shuanglu.life/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/</guid>
+      <description>前序： ​ 为何要使用S3对象存储作为harbor的后端，S3存储的优势在于对于docker镜像而言，一个镜像会有N个层，而每一个层所对应的存储结构上就是一个文件，当镜像仓库存储了大量的镜像之后，如果使用文件系统作为harbor的后端势必在超大型的镜像规模下因文件层数与单文件夹下文件</description>
+    </item>
+    
     <item>
       <title>20210625_harbor_retention_500错误处理</title>
       <link>https://shuanglu.life/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/</link>
