@@ -123,26 +123,26 @@ sysctl.conf中包含all和eth/lo（具体网卡）的arp_ignore参数，取其�
 </code></pre><h3 id="二arp_ignore和arp_announce参数示例">二、arp_ignore和arp_announce参数示例</h3>
 <p>**（1）**当<code>arp_ignore</code>参数配置为0时，eth1网卡上收到目的IP为环回网卡IP的arp请求，但是eth1也会返回arp响应，把自己的mac地址告诉对端。</p>
 <p>
-        <a data-fancybox="gallery" href=".%5c3329890-a3e7a17cc927f9b7.png">
-            <img class="mx-auto" alt="img" src=".%5c3329890-a3e7a17cc927f9b7.png" />
+        <a data-fancybox="gallery" href="./3329890-a3e7a17cc927f9b7.png">
+            <img class="mx-auto" alt="img" src="./3329890-a3e7a17cc927f9b7.png" />
         </a>
     </p>
 <p>**（2）**当<code>arp_ignore</code>参数配置为1时，eth1网卡上收到目的IP为环回网卡IP的arp请求，发现请求的IP不是自己网卡上的IP，不会回arp响应。</p>
 <p>
-        <a data-fancybox="gallery" href=".%5c3329890-e1883fc94156cf8f.png">
-            <img class="mx-auto" alt="img" src=".%5c3329890-e1883fc94156cf8f.png" />
+        <a data-fancybox="gallery" href="./3329890-e1883fc94156cf8f.png">
+            <img class="mx-auto" alt="img" src="./3329890-e1883fc94156cf8f.png" />
         </a>
     </p>
 <p>**（3）**当<code>arp_announce</code>参数配置为0时，系统要发送的IP包源地址为eth1的地址，IP包目的地址根据路由表查询判断需要从eth2网卡发出，这时会先从eth2网卡发起一个arp请求，用于获取目的IP地址的MAC地址。该arp请求的源MAC自然是eth2网卡的MAC地址，但是源IP地址会选择eth1网卡的地址。</p>
 <p>
-        <a data-fancybox="gallery" href=".%5c3329890-faafdae5e9180cfc.png">
-            <img class="mx-auto" alt="img" src=".%5c3329890-faafdae5e9180cfc.png" />
+        <a data-fancybox="gallery" href="./3329890-faafdae5e9180cfc.png">
+            <img class="mx-auto" alt="img" src="./3329890-faafdae5e9180cfc.png" />
         </a>
     </p>
 <p>**（4）**当<code>arp_announce</code>参数配置为2时，eth2网卡发起arp请求时，源IP地址会选择eth2网卡自身的IP地址。</p>
 <p>
-        <a data-fancybox="gallery" href=".%5c3329890-a3fbe338ad95fd5f.png">
-            <img class="mx-auto" alt="img" src=".%5c3329890-a3fbe338ad95fd5f.png" />
+        <a data-fancybox="gallery" href="./3329890-a3fbe338ad95fd5f.png">
+            <img class="mx-auto" alt="img" src="./3329890-a3fbe338ad95fd5f.png" />
         </a>
     </p>
 <h3 id="三arp_ignore和arp_announce参数在dr模式下的作用">三、arp_ignore和arp_announce参数在DR模式下的作用</h3>
