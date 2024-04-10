@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Golang on Shuanglu的博客</title>
-    <link>http://localhost:1313/tags/golang/</link>
+    <link>https://shuanglu.life/tags/golang/</link>
     <description>Recent content in Golang on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Wed, 10 Jan 2024 19:59:37 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://shuanglu.life/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20240110_golang排序</title>
-      <link>http://localhost:1313/post/20240110_golang%E6%8E%92%E5%BA%8F/</link>
+      <link>https://shuanglu.life/post/20240110_golang%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Wed, 10 Jan 2024 19:59:37 +0800</pubDate>
-      <guid>http://localhost:1313/post/20240110_golang%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://shuanglu.life/post/20240110_golang%E6%8E%92%E5%BA%8F/</guid>
       <description>Golang排序 排序算法可以分为内部排序和外部排序。 其中：内部排序是指在内存中对数据进行排序，而外部排序是因为数据量较大，无法一次性放入内存，因此需要访问外部存储。 以下是十种常见的排序算法，具有不同的特点、时间复杂度和稳定性： 1. 冒泡排序（Bubble Sort）： 通过多次比较和交换</description>
     </item>
     <item>
       <title>20230807_eci与swagent问题处置方式</title>
-      <link>http://localhost:1313/post/20230807_eci%E4%B8%8Eswagent%E9%97%AE%E9%A2%98%E5%A4%84%E7%BD%AE%E6%96%B9%E5%BC%8F/</link>
+      <link>https://shuanglu.life/post/20230807_eci%E4%B8%8Eswagent%E9%97%AE%E9%A2%98%E5%A4%84%E7%BD%AE%E6%96%B9%E5%BC%8F/</link>
       <pubDate>Mon, 07 Aug 2023 11:39:44 +0800</pubDate>
-      <guid>http://localhost:1313/post/20230807_eci%E4%B8%8Eswagent%E9%97%AE%E9%A2%98%E5%A4%84%E7%BD%AE%E6%96%B9%E5%BC%8F/</guid>
+      <guid>https://shuanglu.life/post/20230807_eci%E4%B8%8Eswagent%E9%97%AE%E9%A2%98%E5%A4%84%E7%BD%AE%E6%96%B9%E5%BC%8F/</guid>
       <description>20230807_eci与swagent问题处置方式 tag: skywalking-swck-mutating-webhook-configuration 一、问题现象 使用ECI作为弹性容器过程当中因为阿里云ECI容器会对部署的pod触发patch annotation操作如下： 而在此eci 控制器patch 之前 skywalking-swck-controller-manager 控制器会对namespace 带标签swck-injection=en</description>
     </item>
   </channel>

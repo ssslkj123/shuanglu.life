@@ -2,157 +2,157 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Shuanglu的博客</title>
-    <link>http://localhost:1313/tags/</link>
+    <link>https://shuanglu.life/tags/</link>
     <description>Recent content in Tags on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Tue, 06 Feb 2024 19:59:37 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://shuanglu.life/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Git</title>
-      <link>http://localhost:1313/tags/git/</link>
+      <link>https://shuanglu.life/tags/git/</link>
       <pubDate>Tue, 06 Feb 2024 19:59:37 +0800</pubDate>
-      <guid>http://localhost:1313/tags/git/</guid>
+      <guid>https://shuanglu.life/tags/git/</guid>
       <description></description>
     </item>
     <item>
       <title>Github</title>
-      <link>http://localhost:1313/tags/github/</link>
+      <link>https://shuanglu.life/tags/github/</link>
       <pubDate>Tue, 06 Feb 2024 19:59:37 +0800</pubDate>
-      <guid>http://localhost:1313/tags/github/</guid>
+      <guid>https://shuanglu.life/tags/github/</guid>
       <description></description>
     </item>
     <item>
       <title>Golang</title>
-      <link>http://localhost:1313/tags/golang/</link>
+      <link>https://shuanglu.life/tags/golang/</link>
       <pubDate>Wed, 10 Jan 2024 19:59:37 +0800</pubDate>
-      <guid>http://localhost:1313/tags/golang/</guid>
+      <guid>https://shuanglu.life/tags/golang/</guid>
       <description></description>
     </item>
     <item>
       <title>K8s</title>
-      <link>http://localhost:1313/tags/k8s/</link>
+      <link>https://shuanglu.life/tags/k8s/</link>
       <pubDate>Mon, 07 Aug 2023 11:39:44 +0800</pubDate>
-      <guid>http://localhost:1313/tags/k8s/</guid>
+      <guid>https://shuanglu.life/tags/k8s/</guid>
       <description></description>
     </item>
     <item>
       <title>Skywalking-Swck-Mutating-Webhook-Configuration</title>
-      <link>http://localhost:1313/tags/skywalking-swck-mutating-webhook-configuration/</link>
+      <link>https://shuanglu.life/tags/skywalking-swck-mutating-webhook-configuration/</link>
       <pubDate>Mon, 07 Aug 2023 11:39:44 +0800</pubDate>
-      <guid>http://localhost:1313/tags/skywalking-swck-mutating-webhook-configuration/</guid>
+      <guid>https://shuanglu.life/tags/skywalking-swck-mutating-webhook-configuration/</guid>
       <description></description>
     </item>
     <item>
       <title>Velero</title>
-      <link>http://localhost:1313/tags/velero/</link>
+      <link>https://shuanglu.life/tags/velero/</link>
       <pubDate>Thu, 27 Jul 2023 19:41:56 +0800</pubDate>
-      <guid>http://localhost:1313/tags/velero/</guid>
+      <guid>https://shuanglu.life/tags/velero/</guid>
       <description></description>
     </item>
     <item>
       <title>KruiseRollout</title>
-      <link>http://localhost:1313/tags/KruiseRollout/</link>
+      <link>https://shuanglu.life/tags/KruiseRollout/</link>
       <pubDate>Thu, 09 Mar 2023 21:49:00 +0800</pubDate>
-      <guid>http://localhost:1313/tags/KruiseRollout/</guid>
+      <guid>https://shuanglu.life/tags/KruiseRollout/</guid>
       <description></description>
     </item>
     <item>
       <title>Docker</title>
-      <link>http://localhost:1313/tags/docker/</link>
+      <link>https://shuanglu.life/tags/docker/</link>
       <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
-      <guid>http://localhost:1313/tags/docker/</guid>
+      <guid>https://shuanglu.life/tags/docker/</guid>
       <description></description>
     </item>
     <item>
       <title>Dockerfile</title>
-      <link>http://localhost:1313/tags/dockerfile/</link>
+      <link>https://shuanglu.life/tags/dockerfile/</link>
       <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
-      <guid>http://localhost:1313/tags/dockerfile/</guid>
+      <guid>https://shuanglu.life/tags/dockerfile/</guid>
       <description></description>
     </item>
     <item>
       <title>Linux</title>
-      <link>http://localhost:1313/tags/Linux/</link>
+      <link>https://shuanglu.life/tags/Linux/</link>
       <pubDate>Mon, 23 May 2022 10:59:37 +0800</pubDate>
-      <guid>http://localhost:1313/tags/Linux/</guid>
+      <guid>https://shuanglu.life/tags/Linux/</guid>
       <description></description>
     </item>
     <item>
       <title>Os</title>
-      <link>http://localhost:1313/tags/os/</link>
+      <link>https://shuanglu.life/tags/os/</link>
       <pubDate>Mon, 23 May 2022 10:59:37 +0800</pubDate>
-      <guid>http://localhost:1313/tags/os/</guid>
+      <guid>https://shuanglu.life/tags/os/</guid>
       <description></description>
     </item>
     <item>
       <title>Haproxy</title>
-      <link>http://localhost:1313/tags/Haproxy/</link>
+      <link>https://shuanglu.life/tags/Haproxy/</link>
       <pubDate>Tue, 29 Mar 2022 18:44:19 +0800</pubDate>
-      <guid>http://localhost:1313/tags/Haproxy/</guid>
+      <guid>https://shuanglu.life/tags/Haproxy/</guid>
       <description></description>
     </item>
     <item>
       <title>通用知识</title>
-      <link>http://localhost:1313/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/</link>
+      <link>https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/</link>
       <pubDate>Tue, 29 Mar 2022 18:44:19 +0800</pubDate>
-      <guid>http://localhost:1313/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/</guid>
+      <guid>https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/</guid>
       <description></description>
     </item>
     <item>
       <title>问题</title>
-      <link>http://localhost:1313/tags/%E9%97%AE%E9%A2%98/</link>
+      <link>https://shuanglu.life/tags/%E9%97%AE%E9%A2%98/</link>
       <pubDate>Tue, 29 Mar 2022 18:44:19 +0800</pubDate>
-      <guid>http://localhost:1313/tags/%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://shuanglu.life/tags/%E9%97%AE%E9%A2%98/</guid>
       <description></description>
     </item>
     <item>
       <title>证书</title>
-      <link>http://localhost:1313/tags/%E8%AF%81%E4%B9%A6/</link>
+      <link>https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/</link>
       <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
-      <guid>http://localhost:1313/tags/%E8%AF%81%E4%B9%A6/</guid>
+      <guid>https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/</guid>
       <description></description>
     </item>
     <item>
       <title>转换</title>
-      <link>http://localhost:1313/tags/%E8%BD%AC%E6%8D%A2/</link>
+      <link>https://shuanglu.life/tags/%E8%BD%AC%E6%8D%A2/</link>
       <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
-      <guid>http://localhost:1313/tags/%E8%BD%AC%E6%8D%A2/</guid>
+      <guid>https://shuanglu.life/tags/%E8%BD%AC%E6%8D%A2/</guid>
       <description></description>
     </item>
     <item>
       <title>镜像仓库</title>
-      <link>http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</link>
+      <link>https://shuanglu.life/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</link>
       <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
-      <guid>http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</guid>
+      <guid>https://shuanglu.life/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</guid>
       <description></description>
     </item>
     <item>
       <title>Etcd</title>
-      <link>http://localhost:1313/tags/etcd/</link>
+      <link>https://shuanglu.life/tags/etcd/</link>
       <pubDate>Thu, 22 Jul 2021 19:41:56 +0800</pubDate>
-      <guid>http://localhost:1313/tags/etcd/</guid>
+      <guid>https://shuanglu.life/tags/etcd/</guid>
       <description></description>
     </item>
     <item>
       <title>升级错误</title>
-      <link>http://localhost:1313/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/</link>
+      <link>https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/</link>
       <pubDate>Mon, 05 Jul 2021 18:51:40 +0800</pubDate>
-      <guid>http://localhost:1313/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/</guid>
+      <guid>https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/</guid>
       <description></description>
     </item>
     <item>
       <title>Nginx</title>
-      <link>http://localhost:1313/tags/nginx/</link>
+      <link>https://shuanglu.life/tags/nginx/</link>
       <pubDate>Mon, 05 Jul 2021 14:25:25 +0800</pubDate>
-      <guid>http://localhost:1313/tags/nginx/</guid>
+      <guid>https://shuanglu.life/tags/nginx/</guid>
       <description></description>
     </item>
     <item>
       <title>优化</title>
-      <link>http://localhost:1313/tags/%E4%BC%98%E5%8C%96/</link>
+      <link>https://shuanglu.life/tags/%E4%BC%98%E5%8C%96/</link>
       <pubDate>Mon, 05 Jul 2021 14:25:25 +0800</pubDate>
-      <guid>http://localhost:1313/tags/%E4%BC%98%E5%8C%96/</guid>
+      <guid>https://shuanglu.life/tags/%E4%BC%98%E5%8C%96/</guid>
       <description></description>
     </item>
   </channel>

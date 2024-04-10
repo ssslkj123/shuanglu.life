@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Etcd on Shuanglu的博客</title>
-    <link>http://localhost:1313/categories/etcd/</link>
+    <link>https://shuanglu.life/categories/etcd/</link>
     <description>Recent content in Etcd on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 27 Jul 2023 19:41:56 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/categories/etcd/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://shuanglu.life/categories/etcd/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20230727_velero备份迁移kubernetes集群</title>
-      <link>http://localhost:1313/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/</link>
+      <link>https://shuanglu.life/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/</link>
       <pubDate>Thu, 27 Jul 2023 19:41:56 +0800</pubDate>
-      <guid>http://localhost:1313/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/</guid>
+      <guid>https://shuanglu.life/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/</guid>
       <description>一、velero安装 1# wget https://github.com/vmware-tanzu/velero/releases/download/v1.11.1/velero-v1.11.1-linux-amd64.tar.gz 2# tar -zxvf velero-v1.11.1-linux-amd64.tar.gz 3# cp -av velero /usr/bin/ 4 5#velero -h 6# 启用命令补全 7# source &amp;lt;(velero completion bash) 8# velero completion bash &amp;gt; /etc/bash_completion.d/velero 1# cat &amp;gt; credentials-velero &amp;lt;&amp;lt;EOF 2[default] 3aws_access_key_id = admin 4aws_secret_access_key = P@ssw0rd 5EOF 6 7# velero install \ 8 --provider aws \ 9 --image velero/velero:v1.11.1 \ 10 --plugins velero/velero-plugin-for-aws:v1.6.0 \ 11 --bucket velero \ 12 --secret-file ./credentials-velero \ 13 --use-node-agent \ 14 --use-volume-snapshots=false \ 15 --namespace velero \ 16 --backup-location-config region=minio,s3ForcePathStyle=&amp;#34;true&amp;#34;,s3Url=http://192.168.31.110:9000 \ 17 --wait 18 19 --prefix /cce-test 二、卸载 1kubectl delete namespace/velero clusterrolebinding/velero 2kubectl delete crds -l component=velero 三、执行velero 备份与恢复 1# 不执行存储pvc内容</description>
     </item>
     <item>
       <title>20210719_etcd备份异地恢复操作</title>
-      <link>http://localhost:1313/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/</link>
+      <link>https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/</link>
       <pubDate>Thu, 22 Jul 2021 19:41:56 +0800</pubDate>
-      <guid>http://localhost:1313/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/</guid>
+      <guid>https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/</guid>
       <description>背景： ​ kubernetes集群在使用过程当中由于其承载的etcd出现性能瓶颈，因而需要将etcd的全量数据集中迁移至新的etcd集群当中，关于etcd的迁移有多种形式，因为考虑到新etcd集群与原etcd集群之间网络延迟与稳定性，因而使用了停机的全量迁移方式，经过验证停机时间可</description>
     </item>
   </channel>

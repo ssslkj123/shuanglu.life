@@ -2,38 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>证书 on Shuanglu的博客</title>
-    <link>http://localhost:1313/tags/%E8%AF%81%E4%B9%A6/</link>
+    <link>https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/</link>
     <description>Recent content in 证书 on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Sun, 01 Aug 2021 15:51:44 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/%E8%AF%81%E4%B9%A6/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20210729_harbor对接S3对象存储</title>
-      <link>http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/</link>
+      <link>https://shuanglu.life/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/</link>
       <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
-      <guid>http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/</guid>
+      <guid>https://shuanglu.life/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/</guid>
       <description>前序： ​ 为何要使用S3对象存储作为harbor的后端，S3存储的优势在于对于docker镜像而言，一个镜像会有N个层，而每一个层所对应的存储结构上就是一个文件，当镜像仓库存储了大量的镜像之后，如果使用文件系统作为harbor的后端势必在超大型的镜像规模下因文件层数与单文件夹下文件</description>
     </item>
     <item>
-      <title>20210729_harbor对接S3对象存储(2)</title>
-      <link>http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A82/</link>
-      <pubDate>Sun, 01 Aug 2021 15:51:44 +0801</pubDate>
-      <guid>http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A82/</guid>
-      <description>前序： ​ 为什么要使用S3对象存储作为harbor的后端，S3存储的优势在于对于docker镜像而言，一个镜像，会有N多个层，而每一个层所对应的存储结构上就是一个文件，当镜像仓库存储了大量的镜像之后，如果使用文件系统势必会因为文件层数与单文件夹下文件数过多造成的索引过慢的情况（当然</description>
-    </item>
-    <item>
-      <title>20210729_harbor对接S3对象存储(3)</title>
-      <link>http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A83/</link>
-      <pubDate>Sun, 01 Aug 2021 15:51:44 +0802</pubDate>
-      <guid>http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A83/</guid>
-      <description>1.10 查看harbor S3 状态 与使用本地存储不同，当对接了S3之后无法查阅到quota的配额信息，只能够看到自己对接的用户使用了了多少，存储空间容量上限决定取决于对接的桶的权限与配额，需要使用radosgw-admin进行查询。 查看该镜像使用了多少个对象： 1# s3cmd ls --recursive s3://harbor-ceph/ 查看该镜像层是数： 在</description>
-    </item>
-    <item>
       <title>20200826_证书转换</title>
-      <link>http://localhost:1313/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</link>
+      <link>https://shuanglu.life/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</link>
       <pubDate>Mon, 05 Jul 2021 17:33:46 +0800</pubDate>
-      <guid>http://localhost:1313/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</guid>
+      <guid>https://shuanglu.life/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</guid>
       <description>前言： Windows 当中通常证书所使用的格式是pfx证书，pfx证书通常会附带公钥与私钥.即有Public key Cryptography Standards #12 ，PKCS#12来进行了标准定义，包涵公钥与私钥的二进制证书形式，其结尾通常为pfx 或 p12而cer或者Base64是只包涵二进制编码的证书，且只会包涵公钥。且文件以cer作为结</description>
     </item>
   </channel>
