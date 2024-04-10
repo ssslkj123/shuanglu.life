@@ -6,8 +6,15 @@
     <description>Recent content on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 06 Feb 2024 19:59:37 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 10 Apr 2024 22:48:05 +0800</lastBuildDate>
     <atom:link href="https://shuanglu.life/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于我</title>
+      <link>https://shuanglu.life/about/</link>
+      <pubDate>Wed, 10 Apr 2024 22:48:05 +0800</pubDate>
+      <guid>https://shuanglu.life/about/</guid>
+      <description>有技术洁癖，喜欢接触前沿技术，爱折腾，野生IT狗一枚 崇尚开源精神与开源的技术，主做运维、偶尔也写代码。 专注云原生领域：监控、日志、服务网格、可观测性。 爱好旅行，电影，射箭，摩托车。 能文能武，上九天揽月，下五洋捉鳖。 可加好友，欢迎来撩。</description>
+    </item>
     <item>
       <title>20240206_github大文件commit</title>
       <link>https://shuanglu.life/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/</link>
@@ -105,13 +112,6 @@
       <pubDate>Mon, 05 Jul 2021 17:33:46 +0800</pubDate>
       <guid>https://shuanglu.life/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/</guid>
       <description>前言： Windows 当中通常证书所使用的格式是pfx证书，pfx证书通常会附带公钥与私钥.即有Public key Cryptography Standards #12 ，PKCS#12来进行了标准定义，包涵公钥与私钥的二进制证书形式，其结尾通常为pfx 或 p12而cer或者Base64是只包涵二进制编码的证书，且只会包涵公钥。且文件以cer作为结</description>
-    </item>
-    <item>
-      <title>关于我</title>
-      <link>https://shuanglu.life/about/</link>
-      <pubDate>Mon, 05 Jul 2021 16:31:05 +0800</pubDate>
-      <guid>https://shuanglu.life/about/</guid>
-      <description>有技术洁癖，喜欢接触前沿技术，爱折腾，野生IT狗一枚 崇尚开源精神，痴迷于开源的技术发展，现已投身Istio 服务网格相关研究中。 可加好友，欢迎来撩。</description>
     </item>
     <item>
       <title>20201208_nginx缓冲区参数配置优化</title>
