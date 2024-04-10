@@ -6,78 +6,126 @@
     <description>Recent content in Categories on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 29 Mar 2022 18:44:19 +0800</lastBuildDate><atom:link href="https://shuanglu.life/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 06 Feb 2024 19:59:37 +0800</lastBuildDate>
+    <atom:link href="https://shuanglu.life/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Linux</title>
-      <link>https://shuanglu.life/categories/Linux/</link>
-      <pubDate>Tue, 29 Mar 2022 18:44:19 +0800</pubDate>
-      
-      <guid>https://shuanglu.life/categories/Linux/</guid>
+      <title>Git</title>
+      <link>https://shuanglu.life/categories/git/</link>
+      <pubDate>Tue, 06 Feb 2024 19:59:37 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/git/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>docker</title>
+      <title>Github</title>
+      <link>https://shuanglu.life/categories/github/</link>
+      <pubDate>Tue, 06 Feb 2024 19:59:37 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/github/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Golang</title>
+      <link>https://shuanglu.life/categories/golang/</link>
+      <pubDate>Wed, 10 Jan 2024 19:59:37 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/golang/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Kubernetes</title>
+      <link>https://shuanglu.life/categories/Kubernetes/</link>
+      <pubDate>Mon, 07 Aug 2023 11:39:44 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/Kubernetes/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Etcd</title>
+      <link>https://shuanglu.life/categories/etcd/</link>
+      <pubDate>Thu, 27 Jul 2023 19:41:56 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/etcd/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Velero</title>
+      <link>https://shuanglu.life/categories/velero/</link>
+      <pubDate>Thu, 27 Jul 2023 19:41:56 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/velero/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>KruiseRollout</title>
+      <link>https://shuanglu.life/categories/KruiseRollout/</link>
+      <pubDate>Thu, 09 Mar 2023 21:49:00 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/KruiseRollout/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Openkruise</title>
+      <link>https://shuanglu.life/categories/openkruise/</link>
+      <pubDate>Thu, 09 Mar 2023 21:49:00 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/openkruise/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Docker</title>
       <link>https://shuanglu.life/categories/docker/</link>
-      <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
-      
+      <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
       <guid>https://shuanglu.life/categories/docker/</guid>
       <description></description>
     </item>
-    
+    <item>
+      <title>Dockerfile</title>
+      <link>https://shuanglu.life/categories/dockerfile/</link>
+      <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/dockerfile/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Systemd</title>
+      <link>https://shuanglu.life/categories/systemd/</link>
+      <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/systemd/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Linux</title>
+      <link>https://shuanglu.life/categories/Linux/</link>
+      <pubDate>Mon, 23 May 2022 10:59:37 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/Linux/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Os</title>
+      <link>https://shuanglu.life/categories/os/</link>
+      <pubDate>Mon, 23 May 2022 10:59:37 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/os/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Harbor</title>
       <link>https://shuanglu.life/categories/Harbor/</link>
       <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
-      
       <guid>https://shuanglu.life/categories/Harbor/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>openssl</title>
+      <title>Openssl</title>
       <link>https://shuanglu.life/categories/openssl/</link>
       <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
-      
       <guid>https://shuanglu.life/categories/openssl/</guid>
       <description></description>
     </item>
-    
-    <item>
-      <title>etcd</title>
-      <link>https://shuanglu.life/categories/etcd/</link>
-      <pubDate>Thu, 22 Jul 2021 19:41:56 +0800</pubDate>
-      
-      <guid>https://shuanglu.life/categories/etcd/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Kubernetes</title>
-      <link>https://shuanglu.life/categories/Kubernetes/</link>
-      <pubDate>Thu, 22 Jul 2021 19:41:56 +0800</pubDate>
-      
-      <guid>https://shuanglu.life/categories/Kubernetes/</guid>
-      <description></description>
-    </item>
-    
     <item>
       <title>1.10&#43;</title>
       <link>https://shuanglu.life/categories/1.10&#43;/</link>
       <pubDate>Mon, 05 Jul 2021 18:51:40 +0800</pubDate>
-      
       <guid>https://shuanglu.life/categories/1.10&#43;/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>web</title>
+      <title>Web</title>
       <link>https://shuanglu.life/categories/web/</link>
       <pubDate>Mon, 05 Jul 2021 14:25:25 +0800</pubDate>
-      
       <guid>https://shuanglu.life/categories/web/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

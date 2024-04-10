@@ -1051,6 +1051,16 @@ table tr th, table tr td {
     text-align: left;
 }
 
+.highlight .ln {
+    width: 20px;
+    display: block;
+    float: left;
+    text-align: right;
+    user-select: none;
+    padding-right: 8px;
+    color: #ccc;
+}
+
 .github-badge {
     display: inline-block;
     border-radius: 4px;

@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>20220523_服务器基准测试 | Shuanglu的博客</title>
+    <meta property="og:title" content="20220523_服务器基准测试 - Shuanglu的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-05-23T10:59:37&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-05-23T10:59:37&#43;08:00'>
+        
+    <meta name="Keywords" content="[os 性能基准测试]">
+    <meta name="description" content="20220523_服务器基准测试">
+        
+    <meta name="author" content="Kid">
+    <meta property="og:url" content="https://shuanglu.life/post/20220523_%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+        <link rel="stylesheet" href='/css//css/copy-to-clipboard.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://shuanglu.life/">
+                        Shuanglu的博客
+                    </a>
+                
+                <p class="description">运维技术笔记：Kubernetes,Docker,容器,CloudNative等相关</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://shuanglu.life/">首页</a>
+                    
+                    <a  href="https://shuanglu.life/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://shuanglu.life/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+
+    <article class="post">
+        <header>
+            <h1 class="post-title">20220523_服务器基准测试</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年5月23日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/os'>os</a></span>
+            
+            <span class="meta-category"><a href='/categories/Linux'>Linux</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+
+            <h2 id="一cpu-基准性能测试">一、CPU 基准性能测试</h2>
+<h3 id="11-关于cpu频率">1.1 关于CPU频率</h3>
+<p>CPU 最核心的指标是主频，也就是 CPU 内核工作的主时钟频率。基频（Base Frequency）是指在普通状态，BIOS 关闭 Turbo 的时候，CPU 的最高频率不会超过的某个值，通常记为 P1。睿频（Turbo Frequency）指的是基频（P1）以上的频率，有两个关键的睿频。一个是全核睿频（P0n）,指的是一个 CPU 上所有核心都超频时，可以达到的频率。一个是单核最大睿频（P0），指的是单个核心超频时，可以达到的最大频率。
+三者的关系如下：</p>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523170324198.png">
+            <img class="mx-auto" alt="image-20220523170324198" src="./image-20220523170324198.png" />
+        </a>
+    </p>
+<p>通常，我们只说基频和全核睿频，一般不提单核睿频，因为要达到单核睿频通常需要
+关闭 CPU 的一部分核心才能让剩余的核心达到单核睿频的频率。</p>
+<h3 id="12-查看cpu频率">1.2 查看CPU频率</h3>
+<ul>
+<li>
+<p>查看基频</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#998;font-style:italic"># yum install kernel-tools -y</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#998;font-style:italic"># turbostat</span>
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523170416939.png">
+            <img class="mx-auto" alt="image-20220523170416939" src="./image-20220523170416939.png" />
+        </a>
+    </p>
+<p>这里基频是 2.5GHZ</p>
+</li>
+<li>
+<p>查看实际运行频率。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># wget http://www.bitmover.com/lmbench/lmbench3.tar.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span># tar xzvf lmbench3.tar.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span># yum -y install gcc make  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span># CentOS 8 需要额外安装“libtirpc-devel” 否则报：fatal error: rpc/rpc.h: No such file or directory
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span># cd lmbench3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span># make
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span># cd bin/x86_64-linux-gnu/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span># ./mhz
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523170521263.png">
+            <img class="mx-auto" alt="image-20220523170521263" src="./image-20220523170521263.png" />
+        </a>
+    </p>
+<p>实际频率运行在 3.2GHZ 左右，是物理 cpu 的全核睿频频率。
+<strong>注意</strong>：使用不同的服务器，主频可能不一样，这里的结果仅为示例。</p>
+</li>
+</ul>
+<h3 id="13-superpi-cpu性能测试">1.3 SuperPI CPU性能测试</h3>
+<h4 id="131-测试说明">1.3.1 测试说明</h4>
+<p>SuperPI 是利用 CPU 的浮点运算能力来计算出π（圆周率），可以用做测试系统稳定性和测试 CPU 计算完后特定位数圆周率所需的时间。</p>
+<ul>
+<li>
+<p>单核测试命令：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># time echo &#34;scale=5000; 4*a(1)&#34; | bc -l -q &amp;&gt; result.txt
+</span></span></code></pre></div><p><strong>说明</strong>：计算原理简单介绍一下，由于 tan（PI/4）=1，所以有 PI=4*atan(1)。bc 命令是任意精度计算器语言，在 linux 下当做科学计算器使用。-l 指定采用标准数学库，-q 指定 quiet 模式，不打印欢迎语句。最后用 time 命令输出计算的时间，可以用时间的长短来衡量 CPU 核心的计算能力，比如同样计算到 PI 的小数点后 5000 位，计算时间越短，说明 CPU 核心的计算能力越强。</p>
+</li>
+<li>
+<p>多核心测试脚本：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#998;font-style:italic"># cat superpi_multicore.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#008080">cpu_seqs</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">`</span>cat /proc/cpuinfo | grep proce | sed -e <span style="color:#d14">&#34;s/.* //g&#34;</span> | tr -s <span style="color:#d14">&#39;\n&#39;</span> <span style="color:#d14">&#39; &#39;</span><span style="color:#d14">`</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span><span style="color:#000;font-weight:bold">for</span> cpu_seq in <span style="color:#008080">$cpu_seqs</span>;<span style="color:#000;font-weight:bold">do</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>	<span style="color:#0086b3">time</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;scale=5000; 4*a(1)&#34;</span> | taskset -c <span style="color:#008080">$cpu_seq</span> bc -l -q &amp;&gt; result.txt &amp;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span><span style="color:#000;font-weight:bold">done</span>
+</span></span></code></pre></div><p>**说明：**以上脚本先获取云主机有多少个核心，然后根据这个核心数提交对应个数的
+superpi 任务，让每个核心都跑一个 superpi 任务。</p>
+</li>
+<li>
+<p>测试步骤：</p>
+<p>1）单核心测试。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># time echo &#34;scale=5000; 4*a(1)&#34; | bc -l -q &amp;&gt; result.txt
+</span></span></code></pre></div><p>测试结果：</p>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523221308046.png">
+            <img class="mx-auto" alt="image-20220523221308046" src="./image-20220523221308046.png" />
+        </a>
+    </p>
+<p>**结果说明：**数值越小，表明时间越短，说明单核心计算能力越强。</p>
+<p>2）多核心测试</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#998;font-style:italic"># cat superpi_multicore.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#008080">cpu_seqs</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">`</span>cat /proc/cpuinfo | grep proce | sed -e <span style="color:#d14">&#34;s/.* //g&#34;</span> | tr -s <span style="color:#d14">&#39;\n&#39;</span> <span style="color:#d14">&#39; &#39;</span><span style="color:#d14">`</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#000;font-weight:bold">for</span> cpu_seq in <span style="color:#008080">$cpu_seqs</span>;<span style="color:#000;font-weight:bold">do</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>	<span style="color:#0086b3">time</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;scale=5000; 4*a(1)&#34;</span> | taskset -c <span style="color:#008080">$cpu_seq</span> bc -l -q &amp;&gt; result.txt &amp;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span><span style="color:#000;font-weight:bold">done</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span><span style="color:#998;font-style:italic"># sh superpi_multicore.sh</span>
+</span></span></code></pre></div><p>测试结果：</p>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523221029622.png">
+            <img class="mx-auto" alt="image-20220523221029622" src="./image-20220523221029622.png" />
+        </a>
+    </p>
+<p><strong>测试结果说明：</strong></p>
+<ol>
+<li>在服务器上，通常CPU的核心都是 vCPU，也就是说底层物理cpu开启了超线程后  一个物理核心可 以 虚 拟 出 两 个 vCPU 的 核 心 ，也称为两个HT（HyperThreading）。</li>
+<li>对于企业级用户来说，通常为了 CPU 性能运行稳定，一般会限定同一个物理核心的虚拟出的两个 vCPU 绑定在一个云服务器实例上，也称之为PIN 住。</li>
+<li>对于 CPU PIN 住的实例来说，对于单个物理核心上的两个 vCPU 来说，单 vCPU运行 superPI，另一个vCPU 闲置的时候，跑 superPI 的 vcpu 是可以用到所有物理核心的计算能力的。因此对于CPU PIN住的云服务器来说，当两个vCPU同时跑 superPI 时(多进程)，用时会比只有单 vCPU 跑的时候耗时会更多。如上面的测试结果就是这种情况，多进程用时比单进程用时长。</li>
+<li>如果 CPU 没有 PIN 住，跑出来的时间可能是一样的。表面上看 CPU 没有pin住，似乎对客户来说有利，实际上云上的环境通常是多租户的，在 CPU 没有 pin 住的时候，用户的应用更容易受到其他用户的应用的影响，从而无法获取稳定的性能输出。</li>
+</ol>
+</li>
+</ul>
+<h3 id="14-unixbench-测试">1.4 Unixbench 测试</h3>
+<h4 id="141-测试说明">1.4.1 测试说明：</h4>
+<p>unixbench 是一个用于测试 unix 系统性能的工具，也是一个比较通用的 benchmark，此测试的目的是对类 Unix 系统提供一个基本的性能指示，很多测试用于系统性能的不同方面，这些测试的结果是一个指数值（index value，如 520），这个值是测试系统的测试结果与一个基线系统测试结果比较得到的指数值，这样比原始值更容易得到参考价值，测试集合里面所有的测试得到的指数值结合起来得到整个系统的指数值。</p>
+<h4 id="142-测试步骤">1.4.2 测试步骤：</h4>
+<ul>
+<li>
+<p>下载测试工具包。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#998;font-style:italic"># yum install perl-Time-HiRes</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#998;font-style:italic"># wget https://github.com/aliyun/byte-unixbench/releases/download/v5.1.4/UnixBench-5.1.4.tar.gz</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#998;font-style:italic"># tar xzvf UnixBench-5.1.4.tar.gz</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#998;font-style:italic"># cd UnixBench</span>
+</span></span></code></pre></div></li>
+<li>
+<p>单核测试</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># ./Run -c 1
+</span></span></code></pre></div><p>**注意：**执行期间不要执行其他命令，执行完毕结果会打印到屏幕上.<code>sh: 3dinfo: command not found</code> 是用于CPU的3D 性能测试的，不用理会。</p>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523221647999.png">
+            <img class="mx-auto" alt="image-20220523221647999" src="./image-20220523221647999.png" />
+        </a>
+    </p>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523224550606.png">
+            <img class="mx-auto" alt="image-20220523224550606" src="./image-20220523224550606.png" />
+        </a>
+    </p>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523224615575.png">
+            <img class="mx-auto" alt="image-20220523224615575" src="./image-20220523224615575.png" />
+        </a>
+    </p>
+<p>**结果说明：**Index 数值越高越好。</p>
+</li>
+<li>
+<p>多核测试</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># 运行 ./Run -c ${core}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span># (core 为 cpu 线程数，可通过命令&#34;cat /proc/cpuinfo | grep process | wc -l&#34; 获取)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span># cat /proc/cpuinfo | grep process | wc -l
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>4
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span># ./Run -c 4
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523171810569.png">
+            <img class="mx-auto" alt="image-20220523171810569" src="./image-20220523171810569.png" />
+        </a>
+    </p>
+<p>**结果说明：**Index 数值越高越好。</p>
+</li>
+</ul>
+<h2 id="二内存基准性能测试">二、内存基准性能测试</h2>
+<h3 id="21-查看内存容量">2.1 查看内存容量</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>[root@storage01 UnixBench]# free -m
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>              total        used        free      shared  buff/cache   available
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>Mem:           1950        1117         155          21         677         655
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>Swap:          2079          76        2003
+</span></span></code></pre></div><h3 id="22-stream-内存带宽测试">2.2 Stream 内存带宽测试</h3>
+<ul>
+<li>2.3.1 Stream 使用说明：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>stream 是业内公认的用于内存性能评估的基准测试软件，其包括 Copy（复制）、Scale（乘法）、Add（加法）以及 Triad（三者复合）四种不同操作情况下的内存带宽表现。
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>复制(Copy) a(i) = b(i)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>尺度变换(Scale) a(i) = q*b(i)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>矢量求和(Add) a(i) = b(i) + c(i)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>复合矢量求和(Triad) a(i) = b(i) + q*c(i)
+</span></span></code></pre></div><p>Stream 官网地址
+<a href="https://www.cs.virginia.edu/stream/">https://www.cs.virginia.edu/stream/</a>
+Stream 使用说明
+<a href="https://www.cs.virginia.edu/stream/ref.html">https://www.cs.virginia.edu/stream/ref.html</a></p>
+<p><strong>参数设置说明</strong>：</p>
+<ol>
+<li>
+<p>Copy 是复制操作，从一个内存单元中读取一个数，并复制到另一个内存单元。</p>
+</li>
+<li>
+<p>Scale 是乘法操作，从一个内存单元中读取一个数，与常数相乘后，将结果写入另一个内存单元。Add 是加法操作，从两个内存单元中分别读取两个数，相加后，将得到的结果写入另一个内存单元中。</p>
+</li>
+<li>
+<p>Triad 是前面三种的结合，先从内存中读取一个数，与常数相乘后，得到一个乘积，然后从另一个内存单元中读取一个数与之前的乘积相加，得到的结果再写入内存。</p>
+</li>
+<li>
+<p>程序有三个重要参数需要设置，STREA_ARRAY_SIZE，NTIMES 以及 OFFSET。这三个参数的设置可以参考源码中的说明。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>STREAM_ARRAY_SIZE，默认是 10000000。表示测试数据集的大小，该大小应
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>该遵循以下两条规则。
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>1. 数据集大小应不小于 L3 cache 大小的 4 倍。
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>	例如:配置两个 E5 CPU 的服务器，每个 cpu 有 20MB 的 L3 Cache，两个 cpu 共计 40MB。
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>		40MB*4=160MB，每个数据大小是 8Byte，因此数据集大小应该大于160MB/8B=20Million。
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>2. 数据集大小应能确保程序输出时间大于 20 个时钟周期。
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>3. 本例中，我们使用尽量大的 STREAM_ARRAY_SIZE 来进行测试。
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>NTIME。该参数为 kernel 执行的次数，程序将输出除第一次外其他结果中最好的
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>结果，所以 NTIME 的最小值是 2。该值默认为 10，通常不许要修改。
+</span></span></code></pre></div></li>
+</ol>
+<ul>
+<li>
+<p>2.3.2 下载 stream 源码文件，项目：https://github.com/intel/memory-bandwidth-benchmarks</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># https://raw.githubusercontent.com/intel/memory-bandwidth-benchmarks/master/stream.c
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span># yum -y install gcc
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span># ls stream.c
+</span></span></code></pre></div></li>
+<li>
+<p>2.3.3 创建编译测试脚本</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#998;font-style:italic"># cat stream_test.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#998;font-style:italic"># 获取可用 memory</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#008080">available_memory_size</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">`</span>free -m | grep Mem | awk <span style="color:#d14">&#39;{print ($4)*1024*1024}&#39;</span><span style="color:#d14">`</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#998;font-style:italic"># 计算最大 array_size</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="color:#008080">array_size</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$((</span>available_memory_size/8/3<span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#998;font-style:italic"># 编译 stream</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>gcc -O stream.c -fopenmp -DSTREAM_ARRAY_SIZE<span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$array_size</span> -DNTIME<span style="color:#000;font-weight:bold">=</span><span style="color:#099">30</span> -mcmodel<span style="color:#000;font-weight:bold">=</span>medium -o stream.o
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#998;font-style:italic"># 执行测试</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>./stream.o
+</span></span></code></pre></div></li>
+<li>
+<p>执行测试</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># chmod +x stream_test.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>#./stream_test.sh
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523224917881-16533173596929.png">
+            <img class="mx-auto" alt="image-20220523224917881" src="./image-20220523224917881-16533173596929.png" />
+        </a>
+    </p>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523173131338.png">
+            <img class="mx-auto" alt="image-20220523173131338" src="./image-20220523173131338.png" />
+        </a>
+    </p>
+<p>示例内存 16GB，这里使用了 13.6GB 来进行测试。
+**结果说明：**Best Rate 数值越高越好。</p>
+</li>
+</ul>
+<h3 id="23-mlc-内存延迟测试">2.3 MLC 内存延迟测试</h3>
+<ul>
+<li>
+<p>MLC 使用说明：
+mlc 为 intel 的内存测试工具，可以有效方便的测试内存延时。</p>
+</li>
+<li>
+<p>下载</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>https:<span style="color:#000;font-weight:bold">//</span>www<span style="color:#000;font-weight:bold">.</span>intel<span style="color:#000;font-weight:bold">.</span>com<span style="color:#000;font-weight:bold">/</span>content<span style="color:#000;font-weight:bold">/</span>www<span style="color:#000;font-weight:bold">/</span>us<span style="color:#000;font-weight:bold">/</span>en<span style="color:#000;font-weight:bold">/</span>developer<span style="color:#000;font-weight:bold">/</span>articles<span style="color:#000;font-weight:bold">/</span><span style="color:#000;font-weight:bold">tool</span><span style="color:#000;font-weight:bold">/</span>intelr<span style="color:#000;font-weight:bold">-</span>memory<span style="color:#000;font-weight:bold">-</span>latency<span style="color:#000;font-weight:bold">-</span>checker<span style="color:#000;font-weight:bold">.</span>html
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#998;font-style:italic"># 需要手动下载，无法使用wget，有安全申明需要web确认。</span>
+</span></span></code></pre></div></li>
+<li>
+<p>安装</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># tar xzvf mlc_v3.9a.tgz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span># yum install -y glibc
+</span></span></code></pre></div></li>
+<li>
+<p>测试步骤</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># ./Linux/mlc --idle_latency -e -r -l128 -D8192
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523225436396.png">
+            <img class="mx-auto" alt="image-20220523225436396" src="./image-20220523225436396.png" />
+        </a>
+    </p>
+<p>
+        <a data-fancybox="gallery" href="C:%5cUsers%5ckid%5cDesktop%5c20220523_%e6%9c%8d%e5%8a%a1%e5%99%a8%e5%9f%ba%e5%87%86%e6%b5%8b%e8%af%95%e6%96%87%e6%a1%a3_from_aliyun%5cimage-20220523173426919.png">
+            <img class="mx-auto" alt="image-20220523173426919" src="C:%5cUsers%5ckid%5cDesktop%5c20220523_%e6%9c%8d%e5%8a%a1%e5%99%a8%e5%9f%ba%e5%87%86%e6%b5%8b%e8%af%95%e6%96%87%e6%a1%a3_from_aliyun%5cimage-20220523173426919.png" />
+        </a>
+    </p>
+<p>重复运行 10 次，求平均值结果中小括号中的 ns 值即为结果。
+<strong>结果说明</strong>：ns 数值越低越好。</p>
+<p><strong>参数意义：</strong></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>--idle_latency prints the idle memory latency of the platform
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>-e do not modify the h/w prefetcher states
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>-r random access reads for latency thread
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>-l stride length in bytes (default=64)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>-D random access range for latency thread (default=4096)
+</span></span></code></pre></div><p>参考文档：
+<a href="https://software.intel.com/content/www/us/en/develop/articles/intelr-memory-latency-checker.html">https://software.intel.com/content/www/us/en/develop/articles/intelr-memory-latency-checker.html</a></p>
+</li>
+</ul>
+<h2 id="三-网络基准性能测试">三、 网络基准性能测试</h2>
+<h3 id="31-网络测试方法说明">3.1 网络测试方法说明</h3>
+<p>​    Netperf 是一种网络性能的测量工具，主要针对基于 TCP 或 UDP 的传输。Netperf 根据应用的不同，可以进行不同模式的网络性能测试，即批量数据传输（bulk data transfer）模式和请求/应答（request/reponse）模式。Netperf 测试结果所反映的是一个系统能够以多快的速度向另外一个系统发送数据，以及另外一个系统能够以多块的速度接收数据。访问 netperf 官网：www.netperf.org/</p>
+<p>​    具体测试时，选取相同配置的 2 台 Linux 云主机进行配置，云主机 A 上安装 netperf的 netserver 作为服务器端，云主机 B 上安装 netperf 作为客户端，在不运行应用情况下，云主机 B 压测云主机 A（不指定数据包大小），测试云主机 A 的网络 TCP 收带宽性能，结果为 Mb/s。</p>
+<p>​    网络压力持续时间为 5 分钟，取云主机 A 收到压力 50 秒后持续 200 秒的带宽平均值。</p>
+<h3 id="32--测试工具安装">3.2  测试工具安装</h3>
+<ul>
+<li>
+<p>在两台 测试主机上上都安装 netperf</p>
+<p>创建测试脚本：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#998;font-style:italic"># vim install-netperf.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>wget -c https://codeload.github.com/HewlettPackard/netperf/tar.gz/netperf-2.7.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>tar -xzvf netperf-2.7.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>yum install gcc sysstat -y
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span><span style="color:#0086b3">cd</span> netperf-netperf-2.7.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>./configure <span style="color:#000;font-weight:bold">&amp;&amp;</span> make <span style="color:#000;font-weight:bold">&amp;&amp;</span> make install
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span>which netperf
+</span></span></code></pre></div></li>
+<li>
+<p>添加执行权限</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># chmod +x install-netperf.sh
+</span></span></code></pre></div></li>
+<li>
+<p>执行并安装</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># ./install-netperf.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>安装最后输出“/usr/local/bin/netperf”，表明安装成功。
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523230013605.png">
+            <img class="mx-auto" alt="image-20220523230013605" src="./image-20220523230013605.png" />
+        </a>
+    </p>
+</li>
+</ul>
+<h3 id="33-创建测试脚本">3.3 创建测试脚本</h3>
+<ul>
+<li>
+<p>在 01号主机上上创建 server 端测试脚本</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#998;font-style:italic"># cat streamserver.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#008080">connect_num</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">64</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>killall netserver
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="color:#000;font-weight:bold">for</span> j in <span style="color:#d14">`</span>seq <span style="color:#008080">$connect_num</span><span style="color:#d14">`</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#000;font-weight:bold">do</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>	<span style="color:#008080">port</span><span style="color:#000;font-weight:bold">=</span>$<span style="color:#000;font-weight:bold">[</span>16000+j<span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>	netserver -p <span style="color:#008080">$port</span> &gt; netserverstream.log 2&gt;&amp;<span style="color:#099">1</span> &amp;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#000;font-weight:bold">done</span>
+</span></span></code></pre></div><p>**说明：**测试 64 个流。</p>
+</li>
+<li>
+<p>在 02号主机上创建 client 端带宽测试脚本</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#998;font-style:italic"># vim streamclient.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#008080">server_ip</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#008080">connect_num</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">64</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#008080">protocol</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$2</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>killall netperf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span><span style="color:#000;font-weight:bold">for</span> j in <span style="color:#d14">`</span>seq <span style="color:#008080">$connect_num</span><span style="color:#d14">`</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>	<span style="color:#000;font-weight:bold">do</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>		<span style="color:#008080">port</span><span style="color:#000;font-weight:bold">=</span>$<span style="color:#000;font-weight:bold">[</span>16000+j<span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>		netperf -H <span style="color:#d14">${</span><span style="color:#008080">server_ip</span><span style="color:#d14">}</span> -l <span style="color:#099">60</span> -t <span style="color:#d14">${</span><span style="color:#008080">protocol</span><span style="color:#d14">}</span> -p <span style="color:#008080">$port</span> -- -m <span style="color:#099">1400</span> -D &gt; netperfstream.log 2&gt;&amp;<span style="color:#099">1</span> &amp;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>	<span style="color:#000;font-weight:bold">done</span>
+</span></span></code></pre></div><p>**说明：**测试 64 个流。</p>
+</li>
+<li>
+<p>在 02号主机上创建 client 端带宽测试脚本。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#998;font-style:italic"># vim udpclient.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#008080">server_ip</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#008080">connect_num</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">64</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#008080">protocol</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$2</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>killall netperf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span><span style="color:#000;font-weight:bold">for</span> j in <span style="color:#d14">`</span>seq <span style="color:#008080">$connect_num</span><span style="color:#d14">`</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>	<span style="color:#000;font-weight:bold">do</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>		<span style="color:#008080">port</span><span style="color:#000;font-weight:bold">=</span>$<span style="color:#000;font-weight:bold">[</span>16000+j<span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>		netperf -H <span style="color:#d14">${</span><span style="color:#008080">server_ip</span><span style="color:#d14">}</span> -l <span style="color:#099">60</span> -t <span style="color:#d14">${</span><span style="color:#008080">protocol</span><span style="color:#d14">}</span> -p <span style="color:#008080">$port</span> -l <span style="color:#099">300</span> -- -m <span style="color:#099">1</span> -D &gt; netperfpps.log 2&gt;&amp;<span style="color:#099">1</span> &amp;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>	<span style="color:#000;font-weight:bold">done</span>
+</span></span></code></pre></div></li>
+<li>
+<p>添加执行权限</p>
+<p>01号主机上：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># chmod +x streamserver.sh
+</span></span></code></pre></div><p>02号主机上</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># chmod +x streamclient.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span># chmod +x udpclient.sh
+</span></span></code></pre></div><p>通过 <code>ip addr</code> 查看主机的IP地址</p>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523230605440.png">
+            <img class="mx-auto" alt="image-20220523230605440" src="./image-20220523230605440.png" />
+        </a>
+    </p>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523230543174.png">
+            <img class="mx-auto" alt="image-20220523230543174" src="./image-20220523230543174.png" />
+        </a>
+    </p>
+<table>
+<thead>
+<tr>
+<th>主机名称</th>
+<th>内网IP</th>
+<th>测试角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>host01</td>
+<td>192.168.111.201</td>
+<td>Server</td>
+</tr>
+<tr>
+<td>host02</td>
+<td>192.168.111.202</td>
+<td>Client</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h3 id="34-测试网络多流tcp带宽">3.4 测试网络多流TCP带宽</h3>
+<ul>
+<li>在 server 上启动 <code>streamserver.sh</code> 忽略  <code>no process found</code>报错。</li>
+</ul>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523230651312.png">
+            <img class="mx-auto" alt="image-20220523230651312" src="./image-20220523230651312.png" />
+        </a>
+    </p>
+<ul>
+<li>
+<p>在 client 上启动 <code>streamclient.sh</code>忽略  <code>no process found</code>报错。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>./streamclient.sh 192.168.111.201 TCP_STREAM
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523230835608.png">
+            <img class="mx-auto" alt="image-20220523230835608" src="./image-20220523230835608.png" />
+        </a>
+    </p>
+</li>
+</ul>
+<p>
+        <a data-fancybox="gallery" href=".%5cimage-20220523180856994.png">
+            <img class="mx-auto" alt="image-20220523180856994" src=".%5cimage-20220523180856994.png" />
+        </a>
+    </p>
+<p>**说明：**第一个参数指定 sever 的 eth0 内网地址，第二参数指定测试 TCP_STREAM。</p>
+<ul>
+<li>用 <code>sar</code> 命令查看 rxkB/s</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># sar -n DEV 1 250
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523180954685.png">
+            <img class="mx-auto" alt="image-20220523180954685" src="./image-20220523180954685.png" />
+        </a>
+    </p>
+<p>通过 sar 命令查看的是 kB/s ，应该*8/1000 换算成 Mb/s。</p>
+<p><strong>结果说明</strong>：rxkB/s 数值越高越好。</p>
+<h3 id="35-测试网络多流-udp-收-pps">3.5 测试网络多流 UDP 收 PPS</h3>
+<ul>
+<li>在 server 上启动 streamserver.sh</li>
+</ul>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523181059986.png">
+            <img class="mx-auto" alt="image-20220523181059986" src="./image-20220523181059986.png" />
+        </a>
+    </p>
+<ul>
+<li>在 client 上启动 streamclient.sh</li>
+</ul>
+<p>
+        <a data-fancybox="gallery" href="./image-20220523181113825.png">
+            <img class="mx-auto" alt="image-20220523181113825" src="./image-20220523181113825.png" />
+        </a>
+    </p>
+<p>**说明：**第一个参数指定 sever 的 eth0 内网地址，第二参数指定测试 UDP_STREAM。</p>
+<ul>
+<li>在 server 端用 sar 命令查看 rxpck/s</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># sar -n DEV 1 250
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523181241225.png">
+            <img class="mx-auto" alt="image-20220523181241225" src="./image-20220523181241225.png" />
+        </a>
+    </p>
+<p>**结果说明：**rxpck/s 数值越高越好。</p>
+<p>**注意：**对于高性能的主机，建议使用 2~3 个 client 对 server 进行压测，更能够客观反映其网络新能。</p>
+<h2 id="四磁盘性能测试">四、磁盘性能测试</h2>
+<p>对于磁盘来说，最关注的指标一般是顺序读写的带宽和随机读写的 IOPS，前者通常测试 IO 大小是 1M 的情况，后者一般是 4K。测试工具建议采用 <code>FIO</code>。</p>
+<h3 id="41-下载安装测试工具">4.1 下载安装测试工具</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#998;font-style:italic"># wget https://codeload.github.com/axboe/fio/tar.gz/fio-3.8</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#998;font-style:italic"># tar xzvf fio-3.8</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#998;font-style:italic"># cd fio-fio-3.8/</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#998;font-style:italic"># yum install libaio libaio-devel gcc-c++ -y</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span><span style="color:#998;font-style:italic"># ./configure &amp;&amp; make &amp;&amp; make install</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span><span style="color:#998;font-style:italic"># which fio</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span><span style="color:#000;font-weight:bold">/</span>usr<span style="color:#000;font-weight:bold">/</span>local<span style="color:#000;font-weight:bold">/</span>bin<span style="color:#000;font-weight:bold">/</span>fio
+</span></span></code></pre></div><h3 id="42-带宽测试">4.2 带宽测试</h3>
+<p>本次测试/dev/vdb 这块磁盘，用-filename=/dev/vdb 来指定</p>
+<ul>
+<li><strong>顺序写吞吐量（写带宽）</strong>：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># fio -direct=1 -iodepth=64 -rw=write -ioengine=libaio -bs=1024k -size=10G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/vdb -name=Write_BW_Testing
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523181706499-16533010275071.png">
+            <img class="mx-auto" alt="image-20220523181706499" src="./image-20220523181706499-16533010275071.png" />
+        </a>
+    </p>
+<p>另一个terminal 查看：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># iostat -m 5
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523181748732.png">
+            <img class="mx-auto" alt="image-20220523181748732" src="./image-20220523181748732.png" />
+        </a>
+    </p>
+<ul>
+<li><strong>顺序读吞吐量（读带宽）</strong>：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>fio -direct=1 -iodepth=64 -rw=read -ioengine=libaio -bs=1024k -size=10G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/vdb -name=Read_BW_Testing
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523181823196-16533011040383.png">
+            <img class="mx-auto" alt="image-20220523181823196" src="./image-20220523181823196-16533011040383.png" />
+        </a>
+    </p>
+<p>**结果说明：**bw 数值越高越好。</p>
+<p>另一个terminal 查看：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># iostat -m 5
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523181924080.png">
+            <img class="mx-auto" alt="image-20220523181924080" src="./image-20220523181924080.png" />
+        </a>
+    </p>
+<h3 id="43-iops-测试">4.3 IOPS 测试</h3>
+<ul>
+<li>随机写 IOPS：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># fio -direct=1 -iodepth=128 -rw=randwrite -ioengine=libaio -bs=4k -size=10G -numjobs=1  -runtime=1000 -group_reporting -filename=/dev/vdb name=Rand_Write_Testing
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523182044041.png">
+            <img class="mx-auto" alt="image-20220523182044041" src="./image-20220523182044041.png" />
+        </a>
+    </p>
+<p>另一个terminal 查看：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># iostat -m 5
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523182117146.png">
+            <img class="mx-auto" alt="image-20220523182117146" src="./image-20220523182117146.png" />
+        </a>
+    </p>
+<ul>
+<li><strong>随机读 IOPS：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># fio -direct=1 -iodepth=128 -rw=randread -ioengine=libaio -bs=4k -size=10G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/vdb -name=Rand_Read_Testing
+</span></span></code></pre></div><p>**结果说明：**IOPS 数值越高越好。</p>
+<p>另一个terminal 查看：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span># iostat -m 5
+</span></span></code></pre></div><p>
+        <a data-fancybox="gallery" href="./image-20220523182300311.png">
+            <img class="mx-auto" alt="image-20220523182300311" src="./image-20220523182300311.png" />
+        </a>
+    </p>
+<h3 id="44-fio-参数取值说明">4.4 FIO 参数取值说明</h3>
+<p>以下为随机写 IOPS（randwrite）的命令为例，说明各种参数的含义。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-direct=1</td>
+<td>表示测试时忽略 I/O 缓存，数据是否直写。</td>
+</tr>
+<tr>
+<td>-iodepth=128</td>
+<td>表示使用异步 I/O（AIO）时，同时发出 I/O 数的上限为 128。</td>
+</tr>
+<tr>
+<td>-rw=randwrite</td>
+<td>表示测试时的读写策略为随机写（random writes）。<!-- raw HTML omitted -->其它测试可以设置为 :<!-- raw HTML omitted --><strong>randread</strong>（随机读 random reads）<!-- raw HTML omitted --><strong>read</strong>（顺序读 sequential reads）<!-- raw HTML omitted --><strong>write</strong>（顺序写 sequential writes）<!-- raw HTML omitted --><strong>randrw</strong>（混合随机读写 mixed random reads and writes）</td>
+</tr>
+<tr>
+<td>-ioengine=libaio</td>
+<td>表示测试方式为 libaio（Linux AIO，异步 I/O）。<!-- raw HTML omitted -->应用程序使用 I/O通常有两种方式：<!-- raw HTML omitted --><strong>同步</strong>：<!-- raw HTML omitted -->同步的 I/O 一次只能发出一个 I/O 请求，等待内核完成才返回。这样对于单个线程 iodepth 总是小于 1，但是可以透过多个线程并发执行来解决。通常会用 16~32 根线程同时工作将iodepth 塞满。<!-- raw HTML omitted --><strong>异步</strong>：<!-- raw HTML omitted -->异步的 I/O 通常使用 libaio 这样的方式一次提交一批 I/O 请求，然后等待一批的完成，减少交互的次数，会更有效率。</td>
+</tr>
+<tr>
+<td>-bs=4k</td>
+<td>表示单次 I/O 的块文件大小为 4KiB。默认值也是 4KiB。<!-- raw HTML omitted -->测试 IOPS 时，建议将 bs 设置为一个较小的值，如 4k。<!-- raw HTML omitted -->测试吞吐量时，建议将 bs 设置为一个较大的值，如 1024k。</td>
+</tr>
+<tr>
+<td>-size=1G</td>
+<td>表示测试文件大小为 1GiB。</td>
+</tr>
+<tr>
+<td>-numjobs=1</td>
+<td>表示测试线程数为 1。</td>
+</tr>
+<tr>
+<td>-runtime=1000</td>
+<td>表示测试时间为 1000 秒。如果未配置，则持续将前述-size 指定大小的文件，以每次-bs 值为分块大小写完。</td>
+</tr>
+<tr>
+<td>- group_reporting</td>
+<td>表示测试结果里汇总每个进程的统计信息，而非以不同 job 汇总展示信息。</td>
+</tr>
+<tr>
+<td>-filename=iotest</td>
+<td>指定测试文件的名称，例如 iotest。</td>
+</tr>
+<tr>
+<td>-name=Rand_WriteTesting</td>
+<td>表示测试任务名称为 Rand_Write_Testing，可以随意设定。</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+	    
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://ssslkj123.github.io/css/gitalk.css">
+<link rel="stylesheet" href="https://ssslkj123.github.io/css/gitalk/comment.css">
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="https://ssslkj123.github.io/js/md5.min.js"></script>
+<script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: '9bbccf93efbc67caca32',
+        clientSecret: '208da9c1b3eccad0b7ca35b2faa27390e4982e64',
+        repo: 'ssslkj123.github.io',
+        owner: 'ssslkj123',
+        admin: 'ssslkj123',
+        id: md5(location.pathname), 
+        distractionFreeMode: false 
+      });
+     (function() {
+       if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+         document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+         return;
+       }
+       gitalk.render('gitalk-container');
+     })();
+</script>
+
+
+
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="https://shuanglu.life/">Kid</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://shuanglu.life/post/20220523_%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95/">https://shuanglu.life/post/20220523_%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+<div style="padding: 10px 0; margin: 20px auto; width: 100%; font-size:16px; text-align: center;">
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+        <span>打赏</span></button>
+    <div id="QR" style="display: none;">
+        <div id="wechat" style="display: inline-block">
+            <a class="fancybox" rel="group">
+                <img id="wechat_qr" src="https://github.com/ssslkj123/ssslkj123.github.io/blob/main/images/wx.png?raw=true" alt="WeChat Pay"></a>
+            <p>微信打赏</p>
+        </div>
+        <div id="alipay" style="display: inline-block">
+            <a class="fancybox" rel="group">
+                <img id="alipay_qr" src="https://github.com/ssslkj123/ssslkj123.github.io/blob/main/images/zfb.png?raw=true" alt="Alipay"></a>
+            <p>支付宝打赏</p>
+        </div>
+    </div>
+</div>
+
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/os'>os</a></li>
+                
+                <li><a href='/tags/Linux'>Linux</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2024 <a href="https://shuanglu.life/">Shuanglu的博客 By Kid</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        
+    </div>
+	
+    <script src="/js/clipboard.js"></script>
+	
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://shuanglu.life/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://shuanglu.life/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://shuanglu.life/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/" title="20240206_github大文件commit">20240206_github大文件commit</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20240110_golang%E6%8E%92%E5%BA%8F/" title="20240110_golang排序">20240110_golang排序</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20230807_eci%E4%B8%8Eswagent%E9%97%AE%E9%A2%98%E5%A4%84%E7%BD%AE%E6%96%B9%E5%BC%8F/" title="20230807_eci与swagent问题处置方式">20230807_eci与swagent问题处置方式</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/" title="20230727_velero备份迁移kubernetes集群">20230727_velero备份迁移kubernetes集群</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20230309_KuriseRollout%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/" title="20230309_KuriseRollout灰度发布">20230309_KuriseRollout灰度发布</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20230113_docker.sock%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" title="20230113_docker.sock构建镜像">20230113_docker.sock构建镜像</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20220523_%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95/" title="20220523_服务器基准测试">20220523_服务器基准测试</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20210402_Linux%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%B9%8Barp_ignore%E5%92%8Carp_announce/" title="20210402_Linux内核参数之arp_ignore和arp_announce">20210402_Linux内核参数之arp_ignore和arp_announce</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/" title="20210729_harbor对接S3对象存储">20210729_harbor对接S3对象存储</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/" title="20210719_etcd备份异地恢复操作">20210719_etcd备份异地恢复操作</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://shuanglu.life/categories/1.10&#43;/">1.10&#43; (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/docker/">Docker (3)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/dockerfile/">Dockerfile (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/etcd/">Etcd (2)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/git/">Git (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/github/">Github (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/golang/">Golang (2)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Harbor/">Harbor (2)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/KruiseRollout/">KruiseRollout (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Kubernetes/">Kubernetes (5)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Linux/">Linux (3)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/openkruise/">Openkruise (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/openssl/">Openssl (2)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/os/">Os (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/systemd/">Systemd (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/velero/">Velero (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/web/">Web (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://shuanglu.life/tags/docker/">Docker</a>
+    
+    <a href="https://shuanglu.life/tags/dockerfile/">Dockerfile</a>
+    
+    <a href="https://shuanglu.life/tags/etcd/">Etcd</a>
+    
+    <a href="https://shuanglu.life/tags/git/">Git</a>
+    
+    <a href="https://shuanglu.life/tags/github/">Github</a>
+    
+    <a href="https://shuanglu.life/tags/golang/">Golang</a>
+    
+    <a href="https://shuanglu.life/tags/Haproxy/">Haproxy</a>
+    
+    <a href="https://shuanglu.life/tags/k8s/">K8s</a>
+    
+    <a href="https://shuanglu.life/tags/KruiseRollout/">KruiseRollout</a>
+    
+    <a href="https://shuanglu.life/tags/Linux/">Linux</a>
+    
+    <a href="https://shuanglu.life/tags/nginx/">Nginx</a>
+    
+    <a href="https://shuanglu.life/tags/os/">Os</a>
+    
+    <a href="https://shuanglu.life/tags/skywalking-swck-mutating-webhook-configuration/">Skywalking-Swck-Mutating-Webhook-Configuration</a>
+    
+    <a href="https://shuanglu.life/tags/velero/">Velero</a>
+    
+    <a href="https://shuanglu.life/tags/%E4%BC%98%E5%8C%96/">优化</a>
+    
+    <a href="https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/">升级错误</a>
+    
+    <a href="https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/">证书</a>
+    
+    <a href="https://shuanglu.life/tags/%E8%BD%AC%E6%8D%A2/">转换</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/">通用知识</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/">镜像仓库</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%97%AE%E9%A2%98/">问题</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://shuanglu.live" title="Shuanglu的博客">Shuanglu的博客</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="http://docs.kubernetes.org.cn/" title="kubernetes相关指南">Kubernetes指南</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://shuanglu.life/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

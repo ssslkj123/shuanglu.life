@@ -6,15 +6,14 @@
     <description>Recent content in 升级错误 on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 05 Jul 2021 18:51:40 +0800</lastBuildDate><atom:link href="https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 05 Jul 2021 18:51:40 +0800</lastBuildDate>
+    <atom:link href="https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20210625_harbor_retention_500错误处理</title>
       <link>https://shuanglu.life/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/</link>
       <pubDate>Mon, 05 Jul 2021 18:51:40 +0800</pubDate>
-      
       <guid>https://shuanglu.life/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/</guid>
-      <description>背景 harbor 1.9.X 升级到1.10.X之后使用项目当中的tag保留功能会有bug，无法进行镜像的删除，并且也无法删除曾经创建的保留规则。如果需要进行tag保留功能的使用，需要手动将原有的tag保留规则删除后再重新创建，即可恢复。 进入postgresql的 容器 docker exec -it harbor-db /bin/bash 连接本地数据库 psql -U postgres -d registry</description>
+      <description>背景 harbor 1.9.X 升级到1.10.X之后使用项目当中的tag保留功能会有bug，无法进行镜像的删除，并且也无法删除曾经创建的保留规则。如果需要进行tag保留功能的使用，需要手动将原有的tag保留规则删除后再重新创建，即可恢复。 进入postgresql的 容器 1docker exec -it harbor-db /bin/bash 2连接本地数据库 3 4psql -U postgres</description>
     </item>
-    
   </channel>
 </rss>

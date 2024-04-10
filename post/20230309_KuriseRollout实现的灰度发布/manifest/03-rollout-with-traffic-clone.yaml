@@ -1,0 +1,55 @@
+apiVersion: rollouts.kruise.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollout-with-traffic-clone
+  # The rollout resource needs to be in the same namespace as the corresponding workload(deployment, cloneSet)
+  # namespace: xxxx
+  annotations:
+    rollouts.kruise.io/rolling-style: partition
+  namespace: foo
+spec:
+  objectRef:
+    # rollout of published workloads, currently only supports Deployment, CloneSet
+    workloadRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: echoserver-clone
+  strategy:
+    canary:
+      # canary published, e.g. 20%, 40%, 60% ...
+      steps:
+      #- replicas: 1     #第一批发一个 Pod，发布完后暂停，手动确认后进入下一批
+      #- replicas: 60%   #第二批发60% Pod，发布完后暂停，手动确认后进入下一批
+      #- replicas: 100%  #第三批发全量 Pod，最后一批发布完后默认自动完成
+      # optional, The first step of released replicas. If not set, the default is to use 'weight', as shown above is 5%.
+      - replicas: 1
+      # routing 5% traffics to the new version
+        weight: 5
+      # Manual confirmation of the release of the remaining pods
+        pause: {}
+      - replicas: 30%
+        #weight: 30
+        pause: {}
+        matches:
+        - headers:
+          - name: user-agent
+            type: Exact
+            value: pc 
+      - replicas: 60%
+        #weight: 60 # 这里需要注意，有headers头的情况下进行灰度，则不可以进行weight，否则渲染出来的annotation 会无法在阿里云 alb 上进行 正确生成规则 
+        pause: {}
+        matches:
+        - headers:
+          - name: user-agent
+            type: Exact
+            value: mobile
+      - replicas: 100%
+        weight: 100
+        #pause: {}
+      trafficRoutings:
+        # echoserver service name
+      - service: echoserver-clone
+        # echoserver ingress name, current only nginx ingress
+        ingress:
+          name: echoserver-clone
+          classType: aliyun-alb

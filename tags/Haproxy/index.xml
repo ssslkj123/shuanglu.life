@@ -6,15 +6,14 @@
     <description>Recent content in Haproxy on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 29 Mar 2022 18:44:19 +0800</lastBuildDate><atom:link href="https://shuanglu.life/tags/Haproxy/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 29 Mar 2022 18:44:19 +0800</lastBuildDate>
+    <atom:link href="https://shuanglu.life/tags/Haproxy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20210402_Linux内核参数之arp_ignore和arp_announce</title>
       <link>https://shuanglu.life/post/20210402_Linux%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%B9%8Barp_ignore%E5%92%8Carp_announce/</link>
       <pubDate>Tue, 29 Mar 2022 18:44:19 +0800</pubDate>
-      
       <guid>https://shuanglu.life/post/20210402_Linux%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%B9%8Barp_ignore%E5%92%8Carp_announce/</guid>
       <description>Linux内核参数之arp_ignore和arp_announce 一、arp_ignore和arp_announce介绍 arp_ignore和arp_announce参数都和ARP协议相关，主要用于控制系统返回arp响应和发送arp请求时的动作。这两个参数很重要，特别是在LVS的</description>
     </item>
-    
   </channel>
 </rss>

@@ -1,0 +1,28 @@
+apiVersion: rollouts.kruise.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollout-without-traffic
+  # The rollout resource needs to be in the same namespace as the corresponding workload(deployment, cloneSet)
+  namespace: foo
+  annotations:
+  # 这里采用的是分区策略
+    rollouts.kruise.io/rolling-style: partition
+spec:
+  objectRef:
+    # rollout of published workloads, currently only supports Deployment, CloneSet
+    workloadRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: echoserver
+  strategy:
+    canary:
+      # canary published, e.g. 20%, 40%, 60% ...
+      steps:
+      - replicas: 1     #第一批发一个 Pod，发布完后暂停，手动确认后进入下一批
+      - replicas: 2
+      - replicas: 3
+      - replicas: 4
+      - replicas: 5
+      #- replicas: 60%   #第二批发60% Pod，发布完后暂停，手动确认后进入下一批
+      #- replicas: 100%  #第三批发全量 Pod，最后一批发布完后默认自动完成
+        #pause: {}

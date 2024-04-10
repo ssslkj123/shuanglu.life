@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Systemd on Shuanglu的博客</title>
+    <link>https://shuanglu.life/categories/systemd/</link>
+    <description>Recent content in Systemd on Shuanglu的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 13 Jan 2023 22:09:11 +0800</lastBuildDate>
+    <atom:link href="https://shuanglu.life/categories/systemd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20230113_docker.sock构建镜像</title>
+      <link>https://shuanglu.life/post/20230113_docker.sock%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/</link>
+      <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
+      <guid>https://shuanglu.life/post/20230113_docker.sock%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/</guid>
+      <description>一、systemd方式提供docker sock不足 节点需要额外安装 docker-ce 的服务组件，后期扩容node节点需要额外定制，相对麻烦 管理node进程状态麻烦，运行日志，进程挂掉等需要人为干预，升级也需要手动操作。 docker in pod 可以独立运行与管理自己的containerd 与docker 进程，与宿主机</description>
+    </item>
+  </channel>
+</rss>
