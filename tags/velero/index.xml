@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Velero on Shuanglu的博客</title>
-    <link>https://shuanglu.life/tags/velero/</link>
+    <link>http://localhost:1313/tags/velero/</link>
     <description>Recent content in Velero on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 27 Jul 2023 19:41:56 +0800</lastBuildDate>
-    <atom:link href="https://shuanglu.life/tags/velero/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/velero/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20230727_velero备份迁移kubernetes集群</title>
-      <link>https://shuanglu.life/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/</link>
+      <link>http://localhost:1313/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/</link>
       <pubDate>Thu, 27 Jul 2023 19:41:56 +0800</pubDate>
-      <guid>https://shuanglu.life/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/</guid>
+      <guid>http://localhost:1313/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/</guid>
       <description>一、velero安装 1# wget https://github.com/vmware-tanzu/velero/releases/download/v1.11.1/velero-v1.11.1-linux-amd64.tar.gz 2# tar -zxvf velero-v1.11.1-linux-amd64.tar.gz 3# cp -av velero /usr/bin/ 4 5#velero -h 6# 启用命令补全 7# source &amp;lt;(velero completion bash) 8# velero completion bash &amp;gt; /etc/bash_completion.d/velero 1# cat &amp;gt; credentials-velero &amp;lt;&amp;lt;EOF 2[default] 3aws_access_key_id = admin 4aws_secret_access_key = P@ssw0rd 5EOF 6 7# velero install \ 8 --provider aws \ 9 --image velero/velero:v1.11.1 \ 10 --plugins velero/velero-plugin-for-aws:v1.6.0 \ 11 --bucket velero \ 12 --secret-file ./credentials-velero \ 13 --use-node-agent \ 14 --use-volume-snapshots=false \ 15 --namespace velero \ 16 --backup-location-config region=minio,s3ForcePathStyle=&amp;#34;true&amp;#34;,s3Url=http://192.168.31.110:9000 \ 17 --wait 18 19 --prefix /cce-test 二、卸载 1kubectl delete namespace/velero clusterrolebinding/velero 2kubectl delete crds -l component=velero 三、执行velero 备份与恢复 1# 不执行存储pvc内容</description>
     </item>
   </channel>

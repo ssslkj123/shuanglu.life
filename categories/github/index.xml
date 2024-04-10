@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Github on Shuanglu的博客</title>
-    <link>https://shuanglu.life/categories/github/</link>
+    <link>http://localhost:1313/categories/github/</link>
     <description>Recent content in Github on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Tue, 06 Feb 2024 19:59:37 +0800</lastBuildDate>
-    <atom:link href="https://shuanglu.life/categories/github/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/github/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20240206_github大文件commit</title>
-      <link>https://shuanglu.life/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/</link>
+      <link>http://localhost:1313/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/</link>
       <pubDate>Tue, 06 Feb 2024 19:59:37 +0800</pubDate>
-      <guid>https://shuanglu.life/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/</guid>
+      <guid>http://localhost:1313/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/</guid>
       <description>关于在github上遇到上传的单个文件超过其限制的100MB时的处理 1. github 对于单个文件上传的大小是有限制的 详见：[About size limits on GitHub][https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github#about-size-limits-on-github] 其表现则体现为push过程当中的错误（我这里使用的是git的remote，而非http的remote） （如果是https的remote 可能有所不同。）</description>
     </item>
   </channel>

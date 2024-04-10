@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>KruiseRollout on Shuanglu的博客</title>
-    <link>https://shuanglu.life/categories/KruiseRollout/</link>
+    <link>http://localhost:1313/categories/KruiseRollout/</link>
     <description>Recent content in KruiseRollout on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 09 Mar 2023 21:49:00 +0800</lastBuildDate>
-    <atom:link href="https://shuanglu.life/categories/KruiseRollout/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/KruiseRollout/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20230309_KuriseRollout灰度发布</title>
-      <link>https://shuanglu.life/post/20230309_KuriseRollout%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/</link>
+      <link>http://localhost:1313/post/20230309_KuriseRollout%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/</link>
       <pubDate>Thu, 09 Mar 2023 21:49:00 +0800</pubDate>
-      <guid>https://shuanglu.life/post/20230309_KuriseRollout%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/</guid>
+      <guid>http://localhost:1313/post/20230309_KuriseRollout%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/</guid>
       <description>一、架构设计： Kruise rollout 是一个Bypass的旁路组件， 其主要功能是为标准的Kubernetes Deployment、Statefuset以及 openKurise Cloneset这类工作负载进行提供高级部署功能而存在的，其中提供的高级部署功能包含： 金丝雀灰度、流量路由和渐进式交付。 其中关于原生的Kuber</description>
     </item>
   </channel>

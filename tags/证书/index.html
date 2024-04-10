@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,12 +18,12 @@
     <meta name="description" content="证书">
         
     <meta name="author" content="Kid">
-    <meta property="og:url" content="https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/">
+    <meta property="og:url" content="http://localhost:1313/tags/%E8%AF%81%E4%B9%A6/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
     <link rel="stylesheet" href='/css/style.css'>
-    <link rel="alternate" type="application/rss+xml" href="https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/index.xml" title="Shuanglu的博客" />
+    <link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/%E8%AF%81%E4%B9%A6/index.xml" title="Shuanglu的博客" />
     <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
@@ -49,7 +49,7 @@
         <div class="col-group">
             <div class="site-name ">
                 
-                    <a id="logo" href="https://shuanglu.life/">
+                    <a id="logo" href="http://localhost:1313/">
                         Shuanglu的博客
                     </a>
                 
@@ -57,11 +57,11 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://shuanglu.life/">首页</a>
+                    <a class="" href="http://localhost:1313/">首页</a>
                     
-                    <a  href="https://shuanglu.life/archives/" title="归档">归档</a>
+                    <a  href="http://localhost:1313/archives/" title="归档">归档</a>
                     
-                    <a  href="https://shuanglu.life/about/" title="关于">关于</a>
+                    <a  href="http://localhost:1313/about/" title="关于">关于</a>
                     
                 </nav>
             </div>
@@ -88,7 +88,7 @@
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://shuanglu.life/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/">20210729_harbor对接S3对象存储</a>
+                <a href="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/">20210729_harbor对接S3对象存储</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -108,14 +108,68 @@
         
         <div class="post-content">
             前序： ​ 为何要使用S3对象存储作为harbor的后端，S3存储的优势在于对于docker镜像而言，一个镜像会有N个层，而每一个层所对应的存储结构上就是一个文件，当镜像仓库存储了大量的镜像之后，如果使用文件系统作为harbor的后端势必在超大型的镜像规模下因文件层数与单文件夹下文件……
-            <p class="readmore"><a href="https://shuanglu.life/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/">阅读全文</a></p>
+            <p class="readmore"><a href="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/">阅读全文</a></p>
         </div>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://shuanglu.life/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/">20200826_证书转换</a>
+                <a href="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A82/">20210729_harbor对接S3对象存储(2)</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2021年8月1日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/Harbor'>Harbor</a>
+            
+            <a href='/categories/docker'>docker</a>
+            
+            <a href='/categories/openssl'>openssl</a>
+            
+        </div>
+        
+        <div class="post-content">
+            前序： ​ 为什么要使用S3对象存储作为harbor的后端，S3存储的优势在于对于docker镜像而言，一个镜像，会有N多个层，而每一个层所对应的存储结构上就是一个文件，当镜像仓库存储了大量的镜像之后，如果使用文件系统势必会因为文件层数与单文件夹下文件数过多造成的索引过慢的情况（当然……
+            <p class="readmore"><a href="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A82/">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A83/">20210729_harbor对接S3对象存储(3)</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2021年8月1日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/Harbor'>Harbor</a>
+            
+            <a href='/categories/docker'>docker</a>
+            
+            <a href='/categories/openssl'>openssl</a>
+            
+        </div>
+        
+        <div class="post-content">
+            1.10 查看harbor S3 状态 与使用本地存储不同，当对接了S3之后无法查阅到quota的配额信息，只能够看到自己对接的用户使用了了多少，存储空间容量上限决定取决于对接的桶的权限与配额，需要使用radosgw-admin进行查询。 查看该镜像使用了多少个对象： 1# s3cmd ls --recursive s3://harbor-ceph/ 查看该镜像层是数： 在……
+            <p class="readmore"><a href="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A83/">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://localhost:1313/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/">20200826_证书转换</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -131,7 +185,7 @@
         
         <div class="post-content">
             前言： Windows 当中通常证书所使用的格式是pfx证书，pfx证书通常会附带公钥与私钥.即有Public key Cryptography Standards #12 ，PKCS#12来进行了标准定义，包涵公钥与私钥的二进制证书形式，其结尾通常为pfx 或 p12而cer或者Base64是只包涵二进制编码的证书，且只会包涵公钥。且文件以cer作为结……
-            <p class="readmore"><a href="https://shuanglu.life/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/">阅读全文</a></p>
+            <p class="readmore"><a href="http://localhost:1313/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/">阅读全文</a></p>
         </div>
     </article>
     
@@ -146,7 +200,7 @@
 
                     <footer id="footer">
     <div>
-        &copy; 2024 <a href="https://shuanglu.life/">Shuanglu的博客 By Kid</a>
+        &copy; 2024 <a href="http://localhost:1313/">Shuanglu的博客 By Kid</a>
         
     </div>
     <br />
@@ -178,10 +232,10 @@
 
                 <div id="secondary">
     <section class="widget">
-        <form id="search" action='https://shuanglu.life/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='http://localhost:1313/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://shuanglu.life/">
+      <input type="hidden" name="sitesearch" value="http://localhost:1313/">
       <button type="submit" class="submit icon-search"></button>
 </form>
     </section>
@@ -191,43 +245,43 @@
 <ul class="widget-list">
     
     <li>
-        <a href="https://shuanglu.life/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/" title="20240206_github大文件commit">20240206_github大文件commit</a>
+        <a href="http://localhost:1313/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/" title="20240206_github大文件commit">20240206_github大文件commit</a>
     </li>
     
     <li>
-        <a href="https://shuanglu.life/post/20240110_golang%E6%8E%92%E5%BA%8F/" title="20240110_golang排序">20240110_golang排序</a>
+        <a href="http://localhost:1313/post/20240110_golang%E6%8E%92%E5%BA%8F/" title="20240110_golang排序">20240110_golang排序</a>
     </li>
     
     <li>
-        <a href="https://shuanglu.life/post/20230807_eci%E4%B8%8Eswagent%E9%97%AE%E9%A2%98%E5%A4%84%E7%BD%AE%E6%96%B9%E5%BC%8F/" title="20230807_eci与swagent问题处置方式">20230807_eci与swagent问题处置方式</a>
+        <a href="http://localhost:1313/post/20230807_eci%E4%B8%8Eswagent%E9%97%AE%E9%A2%98%E5%A4%84%E7%BD%AE%E6%96%B9%E5%BC%8F/" title="20230807_eci与swagent问题处置方式">20230807_eci与swagent问题处置方式</a>
     </li>
     
     <li>
-        <a href="https://shuanglu.life/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/" title="20230727_velero备份迁移kubernetes集群">20230727_velero备份迁移kubernetes集群</a>
+        <a href="http://localhost:1313/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/" title="20230727_velero备份迁移kubernetes集群">20230727_velero备份迁移kubernetes集群</a>
     </li>
     
     <li>
-        <a href="https://shuanglu.life/post/20230309_KuriseRollout%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/" title="20230309_KuriseRollout灰度发布">20230309_KuriseRollout灰度发布</a>
+        <a href="http://localhost:1313/post/20230309_KuriseRollout%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/" title="20230309_KuriseRollout灰度发布">20230309_KuriseRollout灰度发布</a>
     </li>
     
     <li>
-        <a href="https://shuanglu.life/post/20230113_docker.sock%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" title="20230113_docker.sock构建镜像">20230113_docker.sock构建镜像</a>
+        <a href="http://localhost:1313/post/20230113_docker.sock%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" title="20230113_docker.sock构建镜像">20230113_docker.sock构建镜像</a>
     </li>
     
     <li>
-        <a href="https://shuanglu.life/post/20220523_%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95/" title="20220523_服务器基准测试">20220523_服务器基准测试</a>
+        <a href="http://localhost:1313/post/20220523_%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95/" title="20220523_服务器基准测试">20220523_服务器基准测试</a>
     </li>
     
     <li>
-        <a href="https://shuanglu.life/post/20210402_Linux%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%B9%8Barp_ignore%E5%92%8Carp_announce/" title="20210402_Linux内核参数之arp_ignore和arp_announce">20210402_Linux内核参数之arp_ignore和arp_announce</a>
+        <a href="http://localhost:1313/post/20210402_Linux%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%B9%8Barp_ignore%E5%92%8Carp_announce/" title="20210402_Linux内核参数之arp_ignore和arp_announce">20210402_Linux内核参数之arp_ignore和arp_announce</a>
     </li>
     
     <li>
-        <a href="https://shuanglu.life/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/" title="20210729_harbor对接S3对象存储">20210729_harbor对接S3对象存储</a>
+        <a href="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/" title="20210729_harbor对接S3对象存储">20210729_harbor对接S3对象存储</a>
     </li>
     
     <li>
-        <a href="https://shuanglu.life/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/" title="20210719_etcd备份异地恢复操作">20210719_etcd备份异地恢复操作</a>
+        <a href="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A82/" title="20210729_harbor对接S3对象存储(2)">20210729_harbor对接S3对象存储(2)</a>
     </li>
     
 </ul>
@@ -239,39 +293,39 @@
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li><a href="https://shuanglu.life/categories/1.10&#43;/">1.10&#43; (1)</a></li>
+    <li><a href="http://localhost:1313/categories/1.10&#43;/">1.10&#43; (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/docker/">Docker (3)</a></li>
+    <li><a href="http://localhost:1313/categories/docker/">Docker (5)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/dockerfile/">Dockerfile (1)</a></li>
+    <li><a href="http://localhost:1313/categories/dockerfile/">Dockerfile (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/etcd/">Etcd (2)</a></li>
+    <li><a href="http://localhost:1313/categories/etcd/">Etcd (2)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/git/">Git (1)</a></li>
+    <li><a href="http://localhost:1313/categories/git/">Git (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/github/">Github (1)</a></li>
+    <li><a href="http://localhost:1313/categories/github/">Github (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/golang/">Golang (2)</a></li>
+    <li><a href="http://localhost:1313/categories/golang/">Golang (2)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/Harbor/">Harbor (2)</a></li>
+    <li><a href="http://localhost:1313/categories/Harbor/">Harbor (4)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/KruiseRollout/">KruiseRollout (1)</a></li>
+    <li><a href="http://localhost:1313/categories/KruiseRollout/">KruiseRollout (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/Kubernetes/">Kubernetes (5)</a></li>
+    <li><a href="http://localhost:1313/categories/Kubernetes/">Kubernetes (5)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/Linux/">Linux (3)</a></li>
+    <li><a href="http://localhost:1313/categories/Linux/">Linux (3)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/openkruise/">Openkruise (1)</a></li>
+    <li><a href="http://localhost:1313/categories/openkruise/">Openkruise (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/openssl/">Openssl (2)</a></li>
+    <li><a href="http://localhost:1313/categories/openssl/">Openssl (4)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/os/">Os (1)</a></li>
+    <li><a href="http://localhost:1313/categories/os/">Os (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/systemd/">Systemd (1)</a></li>
+    <li><a href="http://localhost:1313/categories/systemd/">Systemd (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/velero/">Velero (1)</a></li>
+    <li><a href="http://localhost:1313/categories/velero/">Velero (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/web/">Web (1)</a></li>
+    <li><a href="http://localhost:1313/categories/web/">Web (1)</a></li>
     
 </ul>
     </section>
@@ -280,47 +334,47 @@
         <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
-    <a href="https://shuanglu.life/tags/docker/">Docker</a>
+    <a href="http://localhost:1313/tags/docker/">Docker</a>
     
-    <a href="https://shuanglu.life/tags/dockerfile/">Dockerfile</a>
+    <a href="http://localhost:1313/tags/dockerfile/">Dockerfile</a>
     
-    <a href="https://shuanglu.life/tags/etcd/">Etcd</a>
+    <a href="http://localhost:1313/tags/etcd/">Etcd</a>
     
-    <a href="https://shuanglu.life/tags/git/">Git</a>
+    <a href="http://localhost:1313/tags/git/">Git</a>
     
-    <a href="https://shuanglu.life/tags/github/">Github</a>
+    <a href="http://localhost:1313/tags/github/">Github</a>
     
-    <a href="https://shuanglu.life/tags/golang/">Golang</a>
+    <a href="http://localhost:1313/tags/golang/">Golang</a>
     
-    <a href="https://shuanglu.life/tags/Haproxy/">Haproxy</a>
+    <a href="http://localhost:1313/tags/Haproxy/">Haproxy</a>
     
-    <a href="https://shuanglu.life/tags/k8s/">K8s</a>
+    <a href="http://localhost:1313/tags/k8s/">K8s</a>
     
-    <a href="https://shuanglu.life/tags/KruiseRollout/">KruiseRollout</a>
+    <a href="http://localhost:1313/tags/KruiseRollout/">KruiseRollout</a>
     
-    <a href="https://shuanglu.life/tags/Linux/">Linux</a>
+    <a href="http://localhost:1313/tags/Linux/">Linux</a>
     
-    <a href="https://shuanglu.life/tags/nginx/">Nginx</a>
+    <a href="http://localhost:1313/tags/nginx/">Nginx</a>
     
-    <a href="https://shuanglu.life/tags/os/">Os</a>
+    <a href="http://localhost:1313/tags/os/">Os</a>
     
-    <a href="https://shuanglu.life/tags/skywalking-swck-mutating-webhook-configuration/">Skywalking-Swck-Mutating-Webhook-Configuration</a>
+    <a href="http://localhost:1313/tags/skywalking-swck-mutating-webhook-configuration/">Skywalking-Swck-Mutating-Webhook-Configuration</a>
     
-    <a href="https://shuanglu.life/tags/velero/">Velero</a>
+    <a href="http://localhost:1313/tags/velero/">Velero</a>
     
-    <a href="https://shuanglu.life/tags/%E4%BC%98%E5%8C%96/">优化</a>
+    <a href="http://localhost:1313/tags/%E4%BC%98%E5%8C%96/">优化</a>
     
-    <a href="https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/">升级错误</a>
+    <a href="http://localhost:1313/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/">升级错误</a>
     
-    <a href="https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/">证书</a>
+    <a href="http://localhost:1313/tags/%E8%AF%81%E4%B9%A6/">证书</a>
     
-    <a href="https://shuanglu.life/tags/%E8%BD%AC%E6%8D%A2/">转换</a>
+    <a href="http://localhost:1313/tags/%E8%BD%AC%E6%8D%A2/">转换</a>
     
-    <a href="https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/">通用知识</a>
+    <a href="http://localhost:1313/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/">通用知识</a>
     
-    <a href="https://shuanglu.life/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/">镜像仓库</a>
+    <a href="http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/">镜像仓库</a>
     
-    <a href="https://shuanglu.life/tags/%E9%97%AE%E9%A2%98/">问题</a>
+    <a href="http://localhost:1313/tags/%E9%97%AE%E9%A2%98/">问题</a>
     
 </div>
     </section>
@@ -345,7 +399,7 @@
     <section class="widget">
         <h3 class="widget-title">其它</h3>
         <ul class="widget-list">
-            <li><a href="https://shuanglu.life/index.xml">文章 RSS</a></li>
+            <li><a href="http://localhost:1313/index.xml">文章 RSS</a></li>
         </ul>
     </section>
 </div>

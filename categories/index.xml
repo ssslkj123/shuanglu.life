@@ -2,129 +2,129 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Shuanglu的博客</title>
-    <link>https://shuanglu.life/categories/</link>
+    <link>http://localhost:1313/categories/</link>
     <description>Recent content in Categories on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Tue, 06 Feb 2024 19:59:37 +0800</lastBuildDate>
-    <atom:link href="https://shuanglu.life/categories/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Git</title>
-      <link>https://shuanglu.life/categories/git/</link>
+      <link>http://localhost:1313/categories/git/</link>
       <pubDate>Tue, 06 Feb 2024 19:59:37 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/git/</guid>
+      <guid>http://localhost:1313/categories/git/</guid>
       <description></description>
     </item>
     <item>
       <title>Github</title>
-      <link>https://shuanglu.life/categories/github/</link>
+      <link>http://localhost:1313/categories/github/</link>
       <pubDate>Tue, 06 Feb 2024 19:59:37 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/github/</guid>
+      <guid>http://localhost:1313/categories/github/</guid>
       <description></description>
     </item>
     <item>
       <title>Golang</title>
-      <link>https://shuanglu.life/categories/golang/</link>
+      <link>http://localhost:1313/categories/golang/</link>
       <pubDate>Wed, 10 Jan 2024 19:59:37 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/golang/</guid>
+      <guid>http://localhost:1313/categories/golang/</guid>
       <description></description>
     </item>
     <item>
       <title>Kubernetes</title>
-      <link>https://shuanglu.life/categories/Kubernetes/</link>
+      <link>http://localhost:1313/categories/Kubernetes/</link>
       <pubDate>Mon, 07 Aug 2023 11:39:44 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/Kubernetes/</guid>
+      <guid>http://localhost:1313/categories/Kubernetes/</guid>
       <description></description>
     </item>
     <item>
       <title>Etcd</title>
-      <link>https://shuanglu.life/categories/etcd/</link>
+      <link>http://localhost:1313/categories/etcd/</link>
       <pubDate>Thu, 27 Jul 2023 19:41:56 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/etcd/</guid>
+      <guid>http://localhost:1313/categories/etcd/</guid>
       <description></description>
     </item>
     <item>
       <title>Velero</title>
-      <link>https://shuanglu.life/categories/velero/</link>
+      <link>http://localhost:1313/categories/velero/</link>
       <pubDate>Thu, 27 Jul 2023 19:41:56 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/velero/</guid>
+      <guid>http://localhost:1313/categories/velero/</guid>
       <description></description>
     </item>
     <item>
       <title>KruiseRollout</title>
-      <link>https://shuanglu.life/categories/KruiseRollout/</link>
+      <link>http://localhost:1313/categories/KruiseRollout/</link>
       <pubDate>Thu, 09 Mar 2023 21:49:00 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/KruiseRollout/</guid>
+      <guid>http://localhost:1313/categories/KruiseRollout/</guid>
       <description></description>
     </item>
     <item>
       <title>Openkruise</title>
-      <link>https://shuanglu.life/categories/openkruise/</link>
+      <link>http://localhost:1313/categories/openkruise/</link>
       <pubDate>Thu, 09 Mar 2023 21:49:00 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/openkruise/</guid>
+      <guid>http://localhost:1313/categories/openkruise/</guid>
       <description></description>
     </item>
     <item>
       <title>Docker</title>
-      <link>https://shuanglu.life/categories/docker/</link>
+      <link>http://localhost:1313/categories/docker/</link>
       <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/docker/</guid>
+      <guid>http://localhost:1313/categories/docker/</guid>
       <description></description>
     </item>
     <item>
       <title>Dockerfile</title>
-      <link>https://shuanglu.life/categories/dockerfile/</link>
+      <link>http://localhost:1313/categories/dockerfile/</link>
       <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/dockerfile/</guid>
+      <guid>http://localhost:1313/categories/dockerfile/</guid>
       <description></description>
     </item>
     <item>
       <title>Systemd</title>
-      <link>https://shuanglu.life/categories/systemd/</link>
+      <link>http://localhost:1313/categories/systemd/</link>
       <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/systemd/</guid>
+      <guid>http://localhost:1313/categories/systemd/</guid>
       <description></description>
     </item>
     <item>
       <title>Linux</title>
-      <link>https://shuanglu.life/categories/Linux/</link>
+      <link>http://localhost:1313/categories/Linux/</link>
       <pubDate>Mon, 23 May 2022 10:59:37 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/Linux/</guid>
+      <guid>http://localhost:1313/categories/Linux/</guid>
       <description></description>
     </item>
     <item>
       <title>Os</title>
-      <link>https://shuanglu.life/categories/os/</link>
+      <link>http://localhost:1313/categories/os/</link>
       <pubDate>Mon, 23 May 2022 10:59:37 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/os/</guid>
+      <guid>http://localhost:1313/categories/os/</guid>
       <description></description>
     </item>
     <item>
       <title>Harbor</title>
-      <link>https://shuanglu.life/categories/Harbor/</link>
+      <link>http://localhost:1313/categories/Harbor/</link>
       <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/Harbor/</guid>
+      <guid>http://localhost:1313/categories/Harbor/</guid>
       <description></description>
     </item>
     <item>
       <title>Openssl</title>
-      <link>https://shuanglu.life/categories/openssl/</link>
+      <link>http://localhost:1313/categories/openssl/</link>
       <pubDate>Sun, 01 Aug 2021 15:51:44 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/openssl/</guid>
+      <guid>http://localhost:1313/categories/openssl/</guid>
       <description></description>
     </item>
     <item>
       <title>1.10&#43;</title>
-      <link>https://shuanglu.life/categories/1.10&#43;/</link>
+      <link>http://localhost:1313/categories/1.10&#43;/</link>
       <pubDate>Mon, 05 Jul 2021 18:51:40 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/1.10&#43;/</guid>
+      <guid>http://localhost:1313/categories/1.10&#43;/</guid>
       <description></description>
     </item>
     <item>
       <title>Web</title>
-      <link>https://shuanglu.life/categories/web/</link>
+      <link>http://localhost:1313/categories/web/</link>
       <pubDate>Mon, 05 Jul 2021 14:25:25 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/web/</guid>
+      <guid>http://localhost:1313/categories/web/</guid>
       <description></description>
     </item>
   </channel>
