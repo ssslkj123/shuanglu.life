@@ -6,8 +6,15 @@
     <description>Recent content in Kubernetes on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 07 Aug 2023 11:39:44 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 10 Apr 2024 18:44:37 +0800</lastBuildDate>
     <atom:link href="https://shuanglu.life/categories/Kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20240410_pod如何获取IP地址</title>
+      <link>https://shuanglu.life/post/20240410_pod%E5%A6%82%E4%BD%95%E8%8E%B7%E5%BE%97IP%E5%9C%B0%E5%9D%80/</link>
+      <pubDate>Wed, 10 Apr 2024 18:44:37 +0800</pubDate>
+      <guid>https://shuanglu.life/post/20240410_pod%E5%A6%82%E4%BD%95%E8%8E%B7%E5%BE%97IP%E5%9C%B0%E5%9D%80/</guid>
+      <description>20240410_pod如何获得IP地址 翻译自：https://ronaknathani.com/blog/2020/08/how-a-kubernetes-pod-gets-an-ip-address/ Kubernetes 网络模型的核心要求之一是每个 Pod 都应该有自己的 IP 地址，并且集群中的每个 Pod 都应</description>
+    </item>
     <item>
       <title>20230807_eci与swagent问题处置方式</title>
       <link>https://shuanglu.life/post/20230807_eci%E4%B8%8Eswagent%E9%97%AE%E9%A2%98%E5%A4%84%E7%BD%AE%E6%96%B9%E5%BC%8F/</link>

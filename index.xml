@@ -16,6 +16,13 @@
       <description>有技术洁癖，喜欢接触前沿技术，爱折腾，野生IT狗一枚 崇尚开源精神与开源的技术，主做运维、偶尔也写代码。 专注云原生领域：监控、日志、服务网格、可观测性。 爱好旅行，电影，射箭，摩托车。 能文能武，上九天揽月，下五洋捉鳖。 可加好友，欢迎来撩。</description>
     </item>
     <item>
+      <title>20240410_pod如何获取IP地址</title>
+      <link>https://shuanglu.life/post/20240410_pod%E5%A6%82%E4%BD%95%E8%8E%B7%E5%BE%97IP%E5%9C%B0%E5%9D%80/</link>
+      <pubDate>Wed, 10 Apr 2024 18:44:37 +0800</pubDate>
+      <guid>https://shuanglu.life/post/20240410_pod%E5%A6%82%E4%BD%95%E8%8E%B7%E5%BE%97IP%E5%9C%B0%E5%9D%80/</guid>
+      <description>20240410_pod如何获得IP地址 翻译自：https://ronaknathani.com/blog/2020/08/how-a-kubernetes-pod-gets-an-ip-address/ Kubernetes 网络模型的核心要求之一是每个 Pod 都应该有自己的 IP 地址，并且集群中的每个 Pod 都应</description>
+    </item>
+    <item>
       <title>20240206_github大文件commit</title>
       <link>https://shuanglu.life/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/</link>
       <pubDate>Tue, 06 Feb 2024 19:59:37 +0800</pubDate>

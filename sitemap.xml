@@ -8,10 +8,37 @@
     <loc>https://shuanglu.life/about/</loc>
     <lastmod>2024-04-10T22:48:05+08:00</lastmod>
   </url><url>
-    <loc>https://shuanglu.life/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/</loc>
-    <lastmod>2024-02-06T19:59:37+08:00</lastmod>
+    <loc>https://shuanglu.life/post/20240410_pod%E5%A6%82%E4%BD%95%E8%8E%B7%E5%BE%97IP%E5%9C%B0%E5%9D%80/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/categories/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/CNI/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/CNI/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/Kubernete/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/Kubernetes/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/post/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8%E5%9F%BA%E7%A1%80/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2024-04-10T18:44:37+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/</loc>
     <lastmod>2024-02-06T19:59:37+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/tags/git/</loc>
@@ -24,12 +51,6 @@
     <lastmod>2024-02-06T19:59:37+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/categories/github/</loc>
-    <lastmod>2024-02-06T19:59:37+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/post/</loc>
-    <lastmod>2024-02-06T19:59:37+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/tags/</loc>
     <lastmod>2024-02-06T19:59:37+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/post/20240110_golang%E6%8E%92%E5%BA%8F/</loc>
@@ -45,9 +66,6 @@
     <lastmod>2023-08-07T11:39:44+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/tags/k8s/</loc>
-    <lastmod>2023-08-07T11:39:44+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/categories/Kubernetes/</loc>
     <lastmod>2023-08-07T11:39:44+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/tags/skywalking-swck-mutating-webhook-configuration/</loc>
