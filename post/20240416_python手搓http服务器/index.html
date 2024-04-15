@@ -109,8 +109,10 @@
         
         <div class="post-content">
 
-            <h1 id="python手搓多线程版http服务器">Python手搓多线程版http服务器</h1>
-<h1 id="一多线程版">一、多线程版</h1>
+            <h1 id="20240416_python手搓http服务器">20240416_python手搓http服务器</h1>
+<p>最近看了有关阻塞、非阻塞、同步、异步、IO多路复用一些知识，所以想着手搓一个极简版本的Http服务器用来练手、以及巩固知识。</p>
+<p>相关代码如下：</p>
+<h2 id="一多线程版">一、多线程版</h2>
 <div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">random</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">socket</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">threading</span>
@@ -208,7 +210,7 @@
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">95</span><span>        <span style="color:#998;font-style:italic"># time.sleep(5)</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">96</span><span>        <span style="color:#998;font-style:italic"># print(&#34;当前线程状态：{}&#34;.format([t.name for t in threading.enumerate()]))# 元组当中取元素，集合推导式的写法,从列表当中获取名字,如果加了*表示对齐解构，获得每一个元素。</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">97</span><span>    <span style="color:#998;font-style:italic"># server.close()</span>
-</span></span></code></pre></div><h1 id="二线程池版">二、线程池版</h1>
+</span></span></code></pre></div><h2 id="二线程池版">二、线程池版</h2>
 <div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1</span><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">random</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2</span><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">socket</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3</span><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">threading</span>
@@ -320,7 +322,7 @@
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109</span><span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110</span><span>    <span style="color:#998;font-style:italic"># 配置一个死循环打印与检测当前整个进程的子线程数。</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111</span><span>    print_threadlist()
-</span></span></code></pre></div><h1 id="三io多路复用版待改善">三、IO多路复用版(待改善)</h1>
+</span></span></code></pre></div><h2 id="三io多路复用版待改善">三、IO多路复用版(待改善)</h2>
 <div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">socket</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">selectors</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>
