@@ -6,8 +6,15 @@
     <description>Recent content on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 10 Apr 2024 22:48:05 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 16 Apr 2024 04:01:37 +0800</lastBuildDate>
     <atom:link href="https://shuanglu.life/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20240416_Python手搓Http服务器</title>
+      <link>https://shuanglu.life/post/20240416_python%E6%89%8B%E6%90%93http%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
+      <pubDate>Tue, 16 Apr 2024 04:01:37 +0800</pubDate>
+      <guid>https://shuanglu.life/post/20240416_python%E6%89%8B%E6%90%93http%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
+      <description>Python手搓多线程版http服务器 一、多线程版 1import random 2import socket 3import threading 4import time 5 6# 定义一个自定义的返回页面，通过读取当前文件夹下的index.html来构造web页面的bytes字节流 7def page_response() -&amp;gt; bytes: 8 try: 9 # return b&amp;#34;Hello_world&amp;#34; 10 # 两种实现： 11 # 方法1：打开文件为bytes模式，并进行bytes内容的替换。 12 # with open(&amp;#34;index.html&amp;#34;,mode=&amp;#34;rb&amp;#34;)</description>
+    </item>
     <item>
       <title>关于我</title>
       <link>https://shuanglu.life/about/</link>

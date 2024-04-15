@@ -6,8 +6,29 @@
     <description>Recent content in Categories on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 10 Apr 2024 18:44:37 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 16 Apr 2024 04:01:37 +0800</lastBuildDate>
     <atom:link href="https://shuanglu.life/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IO多路复用</title>
+      <link>https://shuanglu.life/categories/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</link>
+      <pubDate>Tue, 16 Apr 2024 04:01:37 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Python</title>
+      <link>https://shuanglu.life/categories/Python/</link>
+      <pubDate>Tue, 16 Apr 2024 04:01:37 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/Python/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>多线程</title>
+      <link>https://shuanglu.life/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</link>
+      <pubDate>Tue, 16 Apr 2024 04:01:37 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</guid>
+      <description></description>
+    </item>
     <item>
       <title>CNI</title>
       <link>https://shuanglu.life/categories/CNI/</link>
