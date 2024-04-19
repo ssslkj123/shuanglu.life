@@ -2,10 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://shuanglu.life/post/20240416_python%E6%89%8B%E6%90%93http%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
-    <lastmod>2024-04-16T04:01:37+08:00</lastmod>
+    <loc>https://shuanglu.life/post/20240420_getopts%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
+    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/categories/</loc>
+    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/post/</loc>
+    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/shell/</loc>
+    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/shell/</loc>
+    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/</loc>
+    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/</loc>
+    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/%E6%A8%A1%E6%9D%BF/</loc>
+    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/%E6%A8%A1%E6%9D%BF/</loc>
+    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/post/20240416_python%E6%89%8B%E6%90%93http%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
     <lastmod>2024-04-16T04:01:37+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/tags/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</loc>
@@ -14,19 +38,10 @@
     <loc>https://shuanglu.life/categories/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</loc>
     <lastmod>2024-04-16T04:01:37+08:00</lastmod>
   </url><url>
-    <loc>https://shuanglu.life/post/</loc>
-    <lastmod>2024-04-16T04:01:37+08:00</lastmod>
-  </url><url>
     <loc>https://shuanglu.life/tags/Python/</loc>
     <lastmod>2024-04-16T04:01:37+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/categories/Python/</loc>
-    <lastmod>2024-04-16T04:01:37+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/</loc>
-    <lastmod>2024-04-16T04:01:37+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/tags/</loc>
     <lastmod>2024-04-16T04:01:37+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</loc>

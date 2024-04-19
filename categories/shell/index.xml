@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shell on Shuanglu的博客</title>
+    <link>https://shuanglu.life/categories/shell/</link>
+    <description>Recent content in Shell on Shuanglu的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 20 Apr 2024 02:29:00 +0800</lastBuildDate>
+    <atom:link href="https://shuanglu.life/categories/shell/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20240420_getopts脚本模板</title>
+      <link>https://shuanglu.life/post/20240420_getopts%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Sat, 20 Apr 2024 02:29:00 +0800</pubDate>
+      <guid>https://shuanglu.life/post/20240420_getopts%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <description>getopts脚本模板 使用shell 进行一系列的参数时可以修改该脚本来完成一系列复杂的操作 脚本模板： 1#!/bin/bash 2# ------------------------------------------ 3# Filename: hello.sh 4# Version: 1.1 5# Date: 2024/04/20 6# Author: kid 7# Email: shuanglulee@foxmail.com 8# Website: shuanglu.life 9# Description: template for getopts 10# Copyright: 2024 kid 11# License: GPL 12# ------------------------------------------ 13# 定义帮助示例： 14do_help(){ 15 echo &amp;#34;用法: $0 [-a|--along] [-b|--blong 参数值] [-c参数值|--clong 参数值] 文件名&amp;#34; 16} 17 18echo</description>
+    </item>
+  </channel>
+</rss>
