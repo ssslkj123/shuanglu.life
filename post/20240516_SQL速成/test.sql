@@ -1,9 +1,7 @@
 /*
-Create By Wayne
+Edit By kid
 
-Source Server         : python
-Source Server Version : 50545
-Source Host           : 192.168.142.135:3306
+Source Host           : 192.168.31.13:3306
 Source Database       : test
 
 Target Server Type    : MYSQL
@@ -12,7 +10,7 @@ File Encoding         : 65001
 
 Date: 2017-10-01 20:27:47
 
-http://www.magedu.com
+https://shuanglu.life
 */
 DROP DATABASE IF EXISTS test;
 CREATE DATABASE IF NOT EXISTS test CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
