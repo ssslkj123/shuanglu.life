@@ -2,25 +2,40 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://shuanglu.life/post/20240420_getopts%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
-    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+    <loc>https://shuanglu.life/post/20240516_SQL%E9%80%9F%E6%88%90/</loc>
+    <lastmod>2024-05-16T21:55:11+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/categories/</loc>
-    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
+    <lastmod>2024-05-16T21:55:11+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/post/</loc>
+    <lastmod>2024-05-16T21:55:11+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/</loc>
+    <lastmod>2024-05-16T21:55:11+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/SQL/</loc>
+    <lastmod>2024-05-16T21:55:11+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/SQL/</loc>
+    <lastmod>2024-05-16T21:55:11+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/</loc>
+    <lastmod>2024-05-16T21:55:11+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2024-05-16T21:55:11+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2024-05-16T21:55:11+08:00</lastmod>
+  </url><url>
+    <loc>https://shuanglu.life/post/20240420_getopts%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
     <lastmod>2024-04-20T02:29:00+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/tags/shell/</loc>
     <lastmod>2024-04-20T02:29:00+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/categories/shell/</loc>
-    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/</loc>
-    <lastmod>2024-04-20T02:29:00+08:00</lastmod>
-  </url><url>
-    <loc>https://shuanglu.life/tags/</loc>
     <lastmod>2024-04-20T02:29:00+08:00</lastmod>
   </url><url>
     <loc>https://shuanglu.life/tags/%E6%A8%A1%E6%9D%BF/</loc>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SQL on Shuanglu的博客</title>
+    <link>https://shuanglu.life/tags/SQL/</link>
+    <description>Recent content in SQL on Shuanglu的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 16 May 2024 21:55:11 +0800</lastBuildDate>
+    <atom:link href="https://shuanglu.life/tags/SQL/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20240516_速成SQL</title>
+      <link>https://shuanglu.life/post/20240516_SQL%E9%80%9F%E6%88%90/</link>
+      <pubDate>Thu, 16 May 2024 21:55:11 +0800</pubDate>
+      <guid>https://shuanglu.life/post/20240516_SQL%E9%80%9F%E6%88%90/</guid>
+      <description>速成SQL（Base on Mysql） 一、Docker compose 快速拉起mysql 单机实例 1# 创建目录 2# mkdir -p ./.etc ./.data 3 4# 容器内mysqld.cnf 文件参数优化： 5# cat .etc/my.cnf 6[mysqld] 7character-set-server=utf8 8log-bin=mysql-bin 9server-id=1 10pid-file = /var/run/mysqld/mysqld.pid 11socket = /var/run/mysqld/mysqld.sock 12datadir = /var/lib/mysql 13sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION 14symbolic-links=0 15secure_file_priv = 16wait_timeout=120 17interactive_timeout=120 18default-time_zone = &amp;#39;+8:00&amp;#39; 19skip-external-locking 20skip-name-resolve 21open_files_limit = 10240 22max_connections = 1000 23max_connect_errors = 6000 24table_open_cache = 800 25max_allowed_packet = 40m 26sort_buffer_size = 2M 27join_buffer_size = 1M 28thread_cache_size = 32 29query_cache_size = 64M 30transaction_isolation = READ-COMMITTED 31tmp_table_size = 128M 32max_heap_table_size = 128M 33log-bin = mysql-bin 34sync-binlog = 1</description>
+    </item>
+  </channel>
+</rss>
