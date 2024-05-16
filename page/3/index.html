@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
+	<meta name="generator" content="Hugo 0.124.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,24 +10,17 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>20210729_harbor对接S3对象存储(3) | Shuanglu的博客</title>
-    <meta property="og:title" content="20210729_harbor对接S3对象存储(3) - Shuanglu的博客">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content='2021-08-01T15:51:44&#43;08:00'>
-        
-        
-    <meta property="article:modified_time" content='2021-08-01T15:51:44&#43;08:00'>
-        
-    <meta name="Keywords" content="[Docker-registry Harbor S3存储]">
-    <meta name="description" content="20210729_harbor对接S3对象存储(3)">
-        
-    <meta name="author" content="Kid">
-    <meta property="og:url" content="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A83/">
+    <title>Shuanglu的博客 | 运维技术笔记：Kubernetes,Docker,容器,CloudNative等相关</title>
+    <meta property="og:title" content="Shuanglu的博客 | 运维技术笔记：Kubernetes,Docker,容器,CloudNative等相关">
+    <meta property="og:type" content="website">
+    <meta name="Keywords" content="k8s,docker,容器,云原生,分布式存储,IaaS,PaaS">
+    <meta name="description" content="一个平凡SRE的日常">
+    <meta property="og:url" content="http://localhost:1313/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
     <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml" title="Shuanglu的博客" />
     <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
@@ -52,9 +46,11 @@
         <div class="col-group">
             <div class="site-name ">
                 
-                    <a id="logo" href="http://localhost:1313/">
-                        Shuanglu的博客
-                    </a>
+                    <h1>
+                        <a id="logo" href="http://localhost:1313/">
+                            Shuanglu的博客
+                        </a>
+                    </h1>
                 
                 <p class="description">运维技术笔记：Kubernetes,Docker,容器,CloudNative等相关</p>
             </div>
@@ -80,200 +76,58 @@
                     
 <div class="res-cons">
     
-
     <article class="post">
         <header>
-            <h1 class="post-title">20210729_harbor对接S3对象存储(3)</h1>
+            <h1 class="post-title">
+                <a href="http://localhost:1313/post/20201208_nginx%E7%BC%93%E5%86%B2%E5%8C%BA%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96/" title="20201208_nginx缓冲区参数配置优化">20201208_nginx缓冲区参数配置优化</a>
+            </h1>
         </header>
         <date class="post-meta meta-date">
-            2021年8月1日
+            2021年7月5日
         </date>
         
         <div class="post-meta">
             <span>|</span>
             
-            <span class="meta-category"><a href='/categories/Harbor'>Harbor</a></span>
-            
-            <span class="meta-category"><a href='/categories/docker'>docker</a></span>
-            
-            <span class="meta-category"><a href='/categories/openssl'>openssl</a></span>
+            <span class="meta-category"><a href='/categories/web'>web</a></span>
             
         </div>
-        
-        
-        <div class="post-meta">
-            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
-                    阅读</span></span>
-        </div>
-        
         
         <div class="post-content">
-
-            <h4 id="110-查看harbor-s3-状态">1.10 查看harbor S3 状态</h4>
-<p>与使用本地存储不同，当对接了S3之后无法查阅到quota的配额信息，只能够看到自己对接的用户使用了了多少，存储空间容量上限决定取决于对接的桶的权限与配额，需要使用<code>radosgw-admin</code>进行查询。</p>
-<p>
-        <a data-fancybox="gallery" href="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210730051659641.png">
-            <img class="mx-auto" alt="image-20210730051659641" src="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210730051659641.png" />
-        </a>
-    </p>
-<p>
-        <a data-fancybox="gallery" href="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210730022706343.png">
-            <img class="mx-auto" alt="image-20210730022706343" src="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210730022706343.png" />
-        </a>
-    </p>
-<p>
-        <a data-fancybox="gallery" href="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210730024452430.png">
-            <img class="mx-auto" alt="image-20210730024452430" src="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210730024452430.png" />
-        </a>
-    </p>
-<p>查看该镜像使用了多少个对象：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#998;font-style:italic"># s3cmd ls --recursive   s3://harbor-ceph/</span>
-</span></span></code></pre></div><p>
-        <a data-fancybox="gallery" href="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210801162510770.png">
-            <img class="mx-auto" alt="image-20210801162510770" src="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210801162510770.png" />
-        </a>
-    </p>
-<p>查看该镜像层是数：</p>
-<p>
-        <a data-fancybox="gallery" href="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210730024222872.png">
-            <img class="mx-auto" alt="image-20210730024222872" src="D:%5cE%5cgitbase%5cblog%5cshuanglu%5ccontent%5cpost%5c20210729_harbor%e5%af%b9%e6%8e%a5S3%e5%af%b9%e8%b1%a1%e5%ad%98%e5%82%a8%281%29%5cimage-20210730024222872.png" />
-        </a>
-    </p>
-<p>在s3的存储当中，验证可知道一个镜像层对应s3当中一个对象。</p>
-
-
-	    
-
-<div id="gitalk-container"></div>
-<link rel="stylesheet" href="https://ssslkj123.github.io/css/gitalk.css">
-<link rel="stylesheet" href="https://ssslkj123.github.io/css/gitalk/comment.css">
-
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-<script src="https://ssslkj123.github.io/js/md5.min.js"></script>
-<script type="text/javascript">
-      var gitalk = new Gitalk({
-        clientID: '9bbccf93efbc67caca32',
-        clientSecret: '208da9c1b3eccad0b7ca35b2faa27390e4982e64',
-        repo: 'ssslkj123.github.io',
-        owner: 'ssslkj123',
-        admin: 'ssslkj123',
-        id: md5(location.pathname), 
-        distractionFreeMode: false 
-      });
-     (function() {
-       if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-         document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
-         return;
-       }
-       gitalk.render('gitalk-container');
-     })();
-</script>
-
-
-
-
+            nginx缓冲区优化 关于缓冲, 主要是合理设置缓冲区大小, 尽量避免缓冲到硬盘时的情况 proxy_buffering proxy_buffering这个参数用来控制是否打开后端响应内容的缓冲区，如果这个设置为off，那么proxy_buffers和proxy_busy_buffers_size这两个指令将会失效。……
         </div>
-
-        
-<div class="post-archive">
-    <ul class="post-copyright">
-        <li><strong>原文作者：</strong><a rel="author" href="http://localhost:1313/">Kid</a></li>
-        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A83/">http://localhost:1313/post/20210729_harbor%E5%AF%B9%E6%8E%A5S3%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A83/</a></li>
-        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
-    </ul>
-</div>
-<br/>
-<div style="padding: 10px 0; margin: 20px auto; width: 100%; font-size:16px; text-align: center;">
-    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
-        <span>打赏</span></button>
-    <div id="QR" style="display: none;">
-        <div id="wechat" style="display: inline-block">
-            <a class="fancybox" rel="group">
-                <img id="wechat_qr" src="https://github.com/ssslkj123/shuanglu.life/blob/master/images/wx.png?raw=true" alt="WeChat Pay"></a>
-            <p>微信打赏</p>
-        </div>
-        <div id="alipay" style="display: inline-block">
-            <a class="fancybox" rel="group">
-                <img id="alipay_qr" src="https://github.com/ssslkj123/shuanglu.life/blob/master/images/zfb.png?raw=true" alt="Alipay"></a>
-            <p>支付宝打赏</p>
-        </div>
-    </div>
-</div>
-
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/20210708_kubernetes.default%E9%9B%86%E7%BE%A4%E9%BB%98%E8%AE%A4%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/">20210708_kubernetes.default集群默认服务不可用问题处理</a></li>
-        
-        <li><a href="/post/20210625_harbor_retention_500%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/">20210625_harbor_retention_500错误处理</a></li>
-        
-        <li><a href="/post/20200826_%E8%AF%81%E4%B9%A6%E8%BD%AC%E6%8D%A2/">20200826_证书转换</a></li>
-        
-        <li><a href="/post/20210719_etcd%E5%A4%87%E4%BB%BD%E5%BC%82%E5%9C%B0%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C/">20210719_etcd备份异地恢复操作</a></li>
-        
-    </ul>
-</div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='/tags/docker'>docker</a></li>
-                
-                <li><a href='/tags/k8s'>k8s</a></li>
-                
-                <li><a href='/tags/%E8%AF%81%E4%B9%A6'>证书</a></li>
-                
-                <li><a href='/tags/%E8%BD%AC%E6%8D%A2'>转换</a></li>
-                
-                <li><a href='/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93'>镜像仓库</a></li>
-                
-                <li><a href='/tags/%E9%97%AE%E9%A2%98'>问题</a></li>
-                
-            </ul>
-            
-        </div>
+        <p class="readmore"><a href="http://localhost:1313/post/20201208_nginx%E7%BC%93%E5%86%B2%E5%8C%BA%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96/">阅读全文</a></p>
     </article>
     
-    <div id="disqus_thread"></div>
-<script>
-    window.disqus_config = function () {
     
+
+
+
+<ol class="page-navigator">
     
+    <li class="prev">
+        <a href="http://localhost:1313/page/2/">上一页</a>
+    </li>
     
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
     
+    <li >
+        <a href="http://localhost:1313/">1</a>
+    </li>
     
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "your github repo"
-            issue-term="pathname"
-            theme="github-light"
-            crossorigin="anonymous"
-            async>
-      </script>
-    </div>
+    <li >
+        <a href="http://localhost:1313/page/2/">2</a>
+    </li>
     
+    <li  class="current">
+        <a href="http://localhost:1313/page/3/">3</a>
+    </li>
+    
+
+    
+</ol>
+
+
 
 </div>
 
@@ -290,21 +144,9 @@
         
     </div>
 	
-    <script src="/js/clipboard.js"></script>
-	
 </footer>
 
 
-    
-    <script type="text/javascript">
-        window.MathJax = {
-            tex2jax: {
-                inlineMath: [['$', '$']],
-                processEscapes: true
-                }
-            };
-    </script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 
 <a id="rocket" href="#top"></a>
 <script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
