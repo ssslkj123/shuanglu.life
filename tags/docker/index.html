@@ -79,11 +79,36 @@
     
     <h3 class="archive-title">
         包含标签
-        <span class="keyword">docker</span>
+        <span class="keyword">Docker</span>
         的文章
     </h3>
     
 
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://shuanglu.life/post/20240613_%E5%AE%B9%E5%99%A8%E5%86%85%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86SIGTERM/">20240613_容器内如何处理SIGTERM</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2024年6月13日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/Docker'>Docker</a>
+            
+            <a href='/categories/%E5%AE%B9%E5%99%A8'>容器</a>
+            
+        </div>
+        
+        <div class="post-content">
+            处理SIGTERM信号 一、exec-app.sh与app.sh，(两种形式都不建议使用)： 使用如下脚本当中指定需要使用#!/bin/bash+ exec 的形式启动进程 1[root@3114-db-mysql ubuntu]# cat exec-app.sh 2#!/bin/bash 3exec /gosignal 4 5# 进入到容器内查看进程结构 6 7root@4d40c42c130e:/# ps -auxf 8USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND 9root 14 1.0 0.0 4628 3528 pts/0 Ss 15:55 0:00 bash 10root 22 0.0 0.0 7064 1588 pts/0 R+ 15:55 0:00 \_ ps -auxf 11root……
+            <p class="readmore"><a href="https://shuanglu.life/post/20240613_%E5%AE%B9%E5%99%A8%E5%86%85%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86SIGTERM/">阅读全文</a></p>
+        </div>
+    </article>
     
     <article class="post">
         <header>
@@ -222,6 +247,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://shuanglu.life/post/20240613_%E5%AE%B9%E5%99%A8%E5%86%85%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86SIGTERM/" title="20240613_容器内如何处理SIGTERM">20240613_容器内如何处理SIGTERM</a>
+    </li>
+    
+    <li>
         <a href="https://shuanglu.life/post/20240516_SQL%E9%80%9F%E6%88%90/" title="20240516_速成SQL">20240516_速成SQL</a>
     </li>
     
@@ -257,10 +286,6 @@
         <a href="https://shuanglu.life/post/20230309_KuriseRollout%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/" title="20230309_KuriseRollout灰度发布">20230309_KuriseRollout灰度发布</a>
     </li>
     
-    <li>
-        <a href="https://shuanglu.life/post/20230113_docker.sock%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F/" title="20230113_docker.sock构建镜像">20230113_docker.sock构建镜像</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -274,7 +299,7 @@
     
     <li><a href="https://shuanglu.life/categories/CNI/">CNI (1)</a></li>
     
-    <li><a href="https://shuanglu.life/categories/docker/">Docker (3)</a></li>
+    <li><a href="https://shuanglu.life/categories/docker/">Docker (4)</a></li>
     
     <li><a href="https://shuanglu.life/categories/dockerfile/">Dockerfile (1)</a></li>
     
@@ -315,6 +340,8 @@
     <li><a href="https://shuanglu.life/categories/web/">Web (1)</a></li>
     
     <li><a href="https://shuanglu.life/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程 (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8/">容器 (1)</a></li>
     
     <li><a href="https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8%E5%9F%BA%E7%A1%80/">容器基础 (1)</a></li>
     
@@ -376,6 +403,8 @@
     <a href="https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/">升级错误</a>
     
     <a href="https://shuanglu.life/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a>
+    
+    <a href="https://shuanglu.life/tags/%E5%AE%B9%E5%99%A8/">容器</a>
     
     <a href="https://shuanglu.life/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
     

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>容器 on Shuanglu的博客</title>
+    <link>https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8/</link>
+    <description>Recent content in 容器 on Shuanglu的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 13 Jun 2024 02:54:11 +0800</lastBuildDate>
+    <atom:link href="https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20240613_容器内如何处理SIGTERM</title>
+      <link>https://shuanglu.life/post/20240613_%E5%AE%B9%E5%99%A8%E5%86%85%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86SIGTERM/</link>
+      <pubDate>Thu, 13 Jun 2024 02:54:11 +0800</pubDate>
+      <guid>https://shuanglu.life/post/20240613_%E5%AE%B9%E5%99%A8%E5%86%85%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86SIGTERM/</guid>
+      <description>处理SIGTERM信号 一、exec-app.sh与app.sh，(两种形式都不建议使用)： 使用如下脚本当中指定需要使用#!/bin/bash+ exec 的形式启动进程 1[root@3114-db-mysql ubuntu]# cat exec-app.sh 2#!/bin/bash 3exec /gosignal 4 5# 进入到容器内查看进程结构 6 7root@4d40c42c130e:/# ps -auxf 8USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND 9root 14 1.0 0.0 4628 3528 pts/0 Ss 15:55 0:00 bash 10root 22 0.0 0.0 7064 1588 pts/0 R+ 15:55 0:00 \_ ps -auxf 11root</description>
+    </item>
+  </channel>
+</rss>

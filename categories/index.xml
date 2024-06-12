@@ -6,8 +6,22 @@
     <description>Recent content in Categories on Shuanglu的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 16 May 2024 21:55:11 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 13 Jun 2024 02:54:11 +0800</lastBuildDate>
     <atom:link href="https://shuanglu.life/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker</title>
+      <link>https://shuanglu.life/categories/docker/</link>
+      <pubDate>Thu, 13 Jun 2024 02:54:11 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/docker/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>容器</title>
+      <link>https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8/</link>
+      <pubDate>Thu, 13 Jun 2024 02:54:11 +0800</pubDate>
+      <guid>https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8/</guid>
+      <description></description>
+    </item>
     <item>
       <title>SQL</title>
       <link>https://shuanglu.life/categories/SQL/</link>
@@ -132,13 +146,6 @@
       <link>https://shuanglu.life/categories/openkruise/</link>
       <pubDate>Thu, 09 Mar 2023 21:49:00 +0800</pubDate>
       <guid>https://shuanglu.life/categories/openkruise/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Docker</title>
-      <link>https://shuanglu.life/categories/docker/</link>
-      <pubDate>Fri, 13 Jan 2023 22:09:11 +0800</pubDate>
-      <guid>https://shuanglu.life/categories/docker/</guid>
       <description></description>
     </item>
     <item>

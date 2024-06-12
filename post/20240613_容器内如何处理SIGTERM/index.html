@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>20240613_容器内如何处理SIGTERM | Shuanglu的博客</title>
+    <meta property="og:title" content="20240613_容器内如何处理SIGTERM - Shuanglu的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2024-06-13T02:54:11&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2024-06-13T02:54:11&#43;08:00'>
+        
+    <meta name="Keywords" content="[SIGTERM 信号 Docker 容器]">
+    <meta name="description" content="20240613_容器内如何处理SIGTERM">
+        
+    <meta name="author" content="Kid">
+    <meta property="og:url" content="https://shuanglu.life/post/20240613_%E5%AE%B9%E5%99%A8%E5%86%85%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86SIGTERM/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+        <link rel="stylesheet" href='/css//css/copy-to-clipboard.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://shuanglu.life/">
+                        Shuanglu的博客
+                    </a>
+                
+                <p class="description">运维技术笔记：Kubernetes,Docker,容器,CloudNative等相关</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://shuanglu.life/">首页</a>
+                    
+                    <a  href="https://shuanglu.life/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://shuanglu.life/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+
+    <article class="post">
+        <header>
+            <h1 class="post-title">20240613_容器内如何处理SIGTERM</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2024年6月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/Docker'>Docker</a></span>
+            
+            <span class="meta-category"><a href='/categories/%E5%AE%B9%E5%99%A8'>容器</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+
+            <h1 id="处理sigterm信号">处理<code>SIGTERM</code>信号</h1>
+<h2 id="一exec-appsh与appsh两种形式都不建议使用">一、<code>exec-app.sh</code>与<code>app.sh</code>，(两种形式都不建议使用)：</h2>
+<ol>
+<li>使用如下脚本当中指定需要使用<code>#!/bin/bash</code>+ <code>exec</code> 的形式启动进程</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat exec-app.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#0086b3">exec</span> /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#998;font-style:italic"># 进入到容器内查看进程结构</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>root@4d40c42c130e:/# ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>root          <span style="color:#099">14</span>  1.0  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3528</span> pts/0    Ss   15:55   0:00 bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>root          <span style="color:#099">22</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1588</span> pts/0    R+   15:55   0:00  <span style="color:#d14">\_</span> ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>root           <span style="color:#099">1</span>  0.3  0.0   <span style="color:#099">2892</span>  <span style="color:#099">1000</span> ?        Ss   15:54   0:00 /bin/sh -c /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>root           <span style="color:#099">7</span>  0.0  0.0 <span style="color:#099">1225800</span> <span style="color:#099">2892</span> ?        Sl   15:54   0:00 /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span><span style="color:#998;font-style:italic"># 此时gosignal的进程是脱离于/bin/sh 存在而运行的，PID为7</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#998;font-style:italic"># 当使用 kill -15 7 时，由于gosignal退出，pid 为1 的进程没有了执行程序，因此容器会退出。</span>
+</span></span></code></pre></div><ol start="2">
+<li>修改启动脚本exe-app.sh使用<code>#!/bin/sh</code> + <code>exec</code>执行</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>root@826eced13ef9:/# cat exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#998;font-style:italic">#!/bin/sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#0086b3">exec</span> /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>root@826eced13ef9:/# ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>root          <span style="color:#099">14</span>  0.5  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3756</span> pts/0    Ss   17:22   0:00 bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>root          <span style="color:#099">22</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1668</span> pts/0    R+   17:22   0:00  <span style="color:#d14">\_</span> ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>root           <span style="color:#099">1</span>  0.1  0.0   <span style="color:#099">2892</span>   <span style="color:#099">956</span> ?        Ss   17:22   0:00 /bin/sh -c /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>root           <span style="color:#099">7</span>  0.0  0.0 <span style="color:#099">1225288</span> <span style="color:#099">2888</span> ?        Sl   17:22   0:00 /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#998;font-style:italic"># 可以发现此时不会再出bash，1号进程直接执行exec-app.sh脚本，gosignal 程序父进程为1号进程。</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker logs -f 826eced13ef9</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>Starting application,Pid is :7, PPid is: <span style="color:#099">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#998;font-style:italic"># 但是执行# docker stop 826eced13ef9  或者 kill -15 1 的操作时候。 gosignal无法感知到SIGTERM信号。</span>
+</span></span></code></pre></div><ol start="3">
+<li>启动脚本当中没有exec的参数，但是脚本申明 <code>#!/bin/bash</code></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat app.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>/gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#998;font-style:italic"># 进入到容器内查看进程结构</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>root@c23faa311be9:/# ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>root          <span style="color:#099">14</span>  0.5  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3576</span> pts/0    Ss   16:06   0:00 bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>root          <span style="color:#099">22</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1556</span> pts/0    R+   16:06   0:00  <span style="color:#d14">\_</span> ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>root           <span style="color:#099">1</span>  0.1  0.0   <span style="color:#099">2892</span>   <span style="color:#099">960</span> ?        Ss   16:06   0:00 /bin/sh -c /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>root           <span style="color:#099">7</span>  0.0  0.0   <span style="color:#099">4364</span>  <span style="color:#099">3328</span> ?        S    16:06   0:00 /bin/bash /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>root           <span style="color:#099">8</span>  0.0  0.0 <span style="color:#099">1225800</span> <span style="color:#099">2888</span> ?        Sl   16:06   0:00  <span style="color:#d14">\_</span> /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker logs -f c23faa311be9</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>Starting application,Pid is :8, PPid is: <span style="color:#099">7</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span><span style="color:#998;font-style:italic">#此时可以看到，exec-app.sh 脚本会新启一个bash 进行执行gosignal,且其自己进程为8，父进程为7</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span><span style="color:#998;font-style:italic">#使用kill -15 8 则直接进程被Terminated ，没有触发gosignal的型号捕捉</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker logs -f c23faa311be9</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>Starting application,Pid is :8, PPid is: <span style="color:#099">7</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>Terminated
+</span></span></code></pre></div><ol start="4">
+<li>启动脚本当中没有exec的参数，但是脚本申明 <code>#!/bin/sh</code></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat app.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#998;font-style:italic">#!/bin/sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>/gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#998;font-style:italic"># 进程结构与使用bash的方式一样</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql gosignal<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker exec -it 3f1 bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>root@3f188daf5b79:/# ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>root          <span style="color:#099">15</span>  1.0  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3760</span> pts/0    Ss   17:34   0:00 bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>root          <span style="color:#099">23</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1612</span> pts/0    R+   17:34   0:00  <span style="color:#d14">\_</span> ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>root           <span style="color:#099">1</span>  0.0  0.0   <span style="color:#099">2892</span>   <span style="color:#099">996</span> ?        Ss   17:34   0:00 /bin/sh -c /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>root           <span style="color:#099">7</span>  0.0  0.0   <span style="color:#099">2892</span>   <span style="color:#099">952</span> ?        S    17:34   0:00 /bin/sh /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>root           <span style="color:#099">8</span>  0.0  0.0 <span style="color:#099">1225544</span> <span style="color:#099">2892</span> ?        Sl   17:34   0:00  <span style="color:#d14">\_</span> /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span><span style="color:#998;font-style:italic"># 由于gosignal 不是1号进程，因此也无法感知SIGTERM信号</span>
+</span></span></code></pre></div><p>结论：如论使用何种方式进行都无法让<code>gosignal</code>收到 15的停止信号。</p>
+<h2 id="二entrypoint-signalsh形式">二、entrypoint-signal.sh形式</h2>
+<ol>
+<li>未启用<code>Dockerfile</code>的<code>SHELL [&quot;/bin/bash&quot;,&quot;-c&quot;]</code>参数时，<code>bash</code>不会为1号进程</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql gosignal<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic">#cat /entrypoint-signal.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>/gosignal &amp; <span style="color:#008080">PID1</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;</span><span style="color:#008080">$!</span><span style="color:#d14">&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;gosignal started with pid </span><span style="color:#008080">$PID1</span><span style="color:#d14">&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>handle_sigterm<span style="color:#000;font-weight:bold">(){</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>        <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;[INFO] Received SIGTERM&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        <span style="color:#0086b3">kill</span> -SINTERM <span style="color:#008080">$PID1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>        <span style="color:#0086b3">wait</span> <span style="color:#008080">$PID1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span><span style="color:#000;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#0086b3">trap</span> handle_sigterm SIGTERM
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#0086b3">wait</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#998;font-style:italic"># 进程形式：</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>root@17b995db94df:/# ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>root          <span style="color:#099">16</span>  0.6  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3708</span> pts/0    Ss   16:58   0:00 bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>root          <span style="color:#099">24</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1544</span> pts/0    R+   16:58   0:00  <span style="color:#d14">\_</span> ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>root           <span style="color:#099">1</span>  0.0  0.0   <span style="color:#099">2892</span>   <span style="color:#099">964</span> ?        Ss   16:57   0:00 /bin/sh -c /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>root           <span style="color:#099">7</span>  0.0  0.0   <span style="color:#099">4364</span>  <span style="color:#099">3244</span> ?        S    16:57   0:00 /bin/bash /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>root           <span style="color:#099">8</span>  0.0  0.0 <span style="color:#099">1225800</span> <span style="color:#099">2888</span> ?        Sl   16:57   0:00  <span style="color:#d14">\_</span> /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span><span style="color:#998;font-style:italic"># 使用docker stop 该进程，无法得到响应，最终被强制删掉</span>
+</span></span></code></pre></div><p>2.启用<code>Dockerfile</code>的<code>SHELL [&quot;/bin/bash&quot;,&quot;-c&quot;]</code>参数。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat Dockerfile</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>FROM ubuntu:22.04
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>LABEL <span style="color:#d14">&#34;author&#34;</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;kid&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#998;font-style:italic"># 注意这里使用了SHELL为BASH，如果不加，则1号进程会变为/bin/sh -c的形式</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>SHELL <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;/bin/bash&#34;</span>,<span style="color:#d14">&#34;-c&#34;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>ENV TINI_VERSION v0.19.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>ADD https://github.com/krallin/tini/releases/download/<span style="color:#d14">${</span><span style="color:#008080">TINI_VERSION</span><span style="color:#d14">}</span>/tini /tini
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>RUN chmod +x /tini
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>COPY gosignal/gosignal /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>COPY entrypoint-signal.sh /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>RUN chmod +x /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>COPY exec-app.sh /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>RUN chmod +x /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>ENTRYPOINT /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#998;font-style:italic">#此时的1号进程发生了变化，</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>root@c82450e19085:/# ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>root          <span style="color:#099">15</span>  0.5  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3688</span> pts/0    Ss   17:06   0:00 bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>root          <span style="color:#099">23</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1608</span> pts/0    R+   17:06   0:00  <span style="color:#d14">\_</span> ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>root           <span style="color:#099">1</span>  0.0  0.0   <span style="color:#099">4364</span>  <span style="color:#099">3120</span> ?        Ss   17:06   0:00 /bin/bash /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>root           <span style="color:#099">7</span>  0.0  0.0 <span style="color:#099">1225800</span> <span style="color:#099">2892</span> ?        Sl   17:06   0:00 /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span><span style="color:#998;font-style:italic">#对1号进程进行执行kill -15 1 或者docker stop c82 的的操作是进程均或感知到SIGTERM的信号。</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker logs -f c82</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>gosignal started with pid <span style="color:#099">7</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>Starting application,Pid is :7, PPid is: <span style="color:#099">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span><span style="color:#000;font-weight:bold">[</span>INFO<span style="color:#000;font-weight:bold">]</span> Received SIGTERM
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span>已捕捉到信号：SIGTERM, 执行关闭,sig is : terminated
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>Exiting!
+</span></span></code></pre></div><h2 id="三使用tini工具">三、使用tini工具</h2>
+<ol>
+<li><code>Tini</code>作为<code>ENTRYPOINT</code>, <code>gosignal</code>应用程序作为<code>CMD</code>的入参传入</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat Dockerfile</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">FROM</span><span style="color:#d14"> ubuntu:22.04</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">LABEL</span> <span style="color:#d14">&#34;author&#34;</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;kid&#34;</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#998;font-style:italic">#SHELL [&#34;/bin/bash&#34;,&#34;-c&#34;]</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">ENV</span> TINI_VERSION v0.19.0<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">ADD</span> https://github.com/krallin/tini/releases/download/<span style="color:#d14">${</span><span style="color:#008080">TINI_VERSION</span><span style="color:#d14">}</span>/tini /tini<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">RUN</span> chmod +x /tini<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">COPY</span> gosignal/gosignal /gosignal<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">COPY</span> entrypoint-signal.sh /entrypoint-signal.sh<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">RUN</span> chmod +x /entrypoint-signal.sh<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">COPY</span> exec-app.sh /exec-app.sh<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">RUN</span> chmod +x /exec-app.sh<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">ENTRYPOINT</span> [<span style="color:#d14">&#34;/tini&#34;</span>, <span style="color:#d14">&#34;--&#34;</span>]<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">CMD</span> [<span style="color:#d14">&#34;/gosignal&#34;</span>]<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#998;font-style:italic"># 容器内进程结构：</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span><span style="color:#a61717;background-color:#e3d2d2"></span>root@91ed8c1f402d:/# ps -auxf<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">USER</span><span style="color:#d14">         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span><span style="color:#a61717;background-color:#e3d2d2"></span>root          <span style="color:#099">14</span>  0.6  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3572</span> pts/0    Ss   17:42   0:00 bash<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span><span style="color:#a61717;background-color:#e3d2d2"></span>root          <span style="color:#099">22</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1584</span> pts/0    R+   17:42   0:00  <span style="color:#d14">\_</span> ps -auxf<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span><span style="color:#a61717;background-color:#e3d2d2"></span>root           <span style="color:#099">1</span>  0.0  0.0   <span style="color:#099">2780</span>   <span style="color:#099">996</span> ?        Ss   17:41   0:00 /tini -- /gosignal<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span><span style="color:#a61717;background-color:#e3d2d2"></span>root           <span style="color:#099">7</span>  0.0  0.0 <span style="color:#099">1225800</span> <span style="color:#099">2888</span> ?        Sl   17:41   0:00 /gosignal<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#998;font-style:italic"># 执行docker stop 或 kill -15 1 此时信号量能够传入到可执行程序当中。</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker stop tini-without-shell</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span><span style="color:#a61717;background-color:#e3d2d2"></span>tini-without-shell<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker logs -f tini-without-shell</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span><span style="color:#a61717;background-color:#e3d2d2"></span>Starting application,Pid is :7, PPid is: <span style="color:#099">1</span><span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span><span style="color:#a61717;background-color:#e3d2d2"></span>已捕捉到信号：SIGTERM, 执行关闭,sig is : terminated<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span><span style="color:#a61717;background-color:#e3d2d2"></span>Exiting!<span style="color:#a61717;background-color:#e3d2d2">
+</span></span></span></code></pre></div><ol start="2">
+<li>
+<p><code>tini</code>作为1号进程，通常不会直接以<code>CMD</code>的形式运行二进制程序，企业在使用过程当中会在<code>CMD</code>后写一个运行脚本，在脚本内执行业务、与启动代码逻辑，此时脚本使用的是bash的话，bash如果不作trap的处理又会出现无法传导<code>SIGTERM</code>给应用程序的情况。</p>
+<p>模拟以上场景，在<code>ENTRYPOINT [&quot;/tini&quot;, &quot;--&quot;]</code> 后调用<code>exec-app.sh</code>与<code>app.sh</code>两种脚本</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#998;font-style:italic"># 场景1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat exec-app.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#0086b3">exec</span> /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat Dockerfile</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>FROM ubuntu:22.04
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>LABEL <span style="color:#d14">&#34;author&#34;</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;kid&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#998;font-style:italic">#SHELL [&#34;/bin/bash&#34;,&#34;-c&#34;]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>ENV TINI_VERSION v0.19.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>ADD https://github.com/krallin/tini/releases/download/<span style="color:#d14">${</span><span style="color:#008080">TINI_VERSION</span><span style="color:#d14">}</span>/tini /tini
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>RUN chmod +x /tini
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>COPY gosignal/gosignal /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>COPY entrypoint-signal.sh /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>RUN chmod +x /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>COPY exec-app.sh /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>RUN chmod +x /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>COPY app.sh /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>RUN chmod +x /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>ENTRYPOINT <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;/tini&#34;</span>, <span style="color:#d14">&#34;--&#34;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>CMD <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;/exec-app.sh&#34;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span><span style="color:#998;font-style:italic"># 进程结构：</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>root@375509e8492e:/# ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>root          <span style="color:#099">15</span>  1.0  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3740</span> pts/0    Ss   17:57   0:00 bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>root          <span style="color:#099">23</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1644</span> pts/0    R+   17:57   0:00  <span style="color:#d14">\_</span> ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>root           <span style="color:#099">1</span>  0.0  0.0   <span style="color:#099">2780</span>  <span style="color:#099">1056</span> ?        Ss   17:57   0:00 /tini -- /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>root           <span style="color:#099">7</span>  0.0  0.0 <span style="color:#099">1225800</span> <span style="color:#099">2888</span> ?        Sl   17:57   0:00 /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span><span style="color:#998;font-style:italic"># 执行docker stop 动作</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker stop tini-exec-app</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span>tini-exec-app
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker logs -f tini-exec-app</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span><span>Starting application,Pid is :7, PPid is: <span style="color:#099">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span><span>已捕捉到信号：SIGTERM, 执行关闭,sig is : terminated
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span><span>Exiting!
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span><span><span style="color:#998;font-style:italic">#结论：在该进程结构下，应用程序能够正常接收到SIGTERM信号.</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span><span style="color:#998;font-style:italic"># 场景2 </span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat app.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span><span><span style="color:#998;font-style:italic">#!/bin/sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span><span>/gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat Dockerfile</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44</span><span>FROM ubuntu:22.04
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45</span><span>LABEL <span style="color:#d14">&#34;author&#34;</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;kid&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46</span><span>ENV TINI_VERSION v0.19.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47</span><span>ADD https://github.com/krallin/tini/releases/download/<span style="color:#d14">${</span><span style="color:#008080">TINI_VERSION</span><span style="color:#d14">}</span>/tini /tini
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48</span><span>RUN chmod +x /tini
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49</span><span>COPY gosignal/gosignal /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50</span><span>COPY entrypoint-signal.sh /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51</span><span>RUN chmod +x /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52</span><span>COPY exec-app.sh /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53</span><span>RUN chmod +x /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54</span><span>COPY app.sh /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55</span><span>RUN chmod +x /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56</span><span>ENTRYPOINT <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;/tini&#34;</span>, <span style="color:#d14">&#34;--&#34;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57</span><span>CMD <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;/app.sh&#34;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59</span><span><span style="color:#998;font-style:italic"># 进程结构：</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60</span><span>root@dff1564118e0:/# ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61</span><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62</span><span>root          <span style="color:#099">15</span>  1.0  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3780</span> pts/0    Ss   18:04   0:00 bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63</span><span>root          <span style="color:#099">23</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1560</span> pts/0    R+   18:04   0:00  <span style="color:#d14">\_</span> ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64</span><span>root           <span style="color:#099">1</span>  0.0  0.0   <span style="color:#099">2780</span>   <span style="color:#099">976</span> ?        Ss   18:02   0:00 /tini -- /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65</span><span>root           <span style="color:#099">7</span>  0.0  0.0   <span style="color:#099">2892</span>  <span style="color:#099">1000</span> ?        S    18:02   0:00 /bin/sh /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66</span><span>root           <span style="color:#099">8</span>  0.0  0.0 <span style="color:#099">1225544</span> <span style="color:#099">2888</span> ?        Sl   18:02   0:00  <span style="color:#d14">\_</span> /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67</span><span><span style="color:#998;font-style:italic"># 执行docker stop 动作</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker stop tini-app</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69</span><span>tini-app
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker logs -f tini-app</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71</span><span>Starting application,Pid is :8, PPid is: <span style="color:#099">7</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72</span><span><span style="color:#998;font-style:italic"># 结论：此时由于gosignal的父进程是PID为7的sh，sh无法给gosingal信号，虽然TINI进行了信号传递，但是结果是gosingal被暴力的杀死，没有处理SIGTERM的过程。</span>
+</span></span></code></pre></div><ol start="3">
+<li><code>tini</code>作为1号进程，<code>CMD</code>脚本(这里使用<code>entrypoint-signal.sh</code>)具备<code>trap SIGTERM</code>的逻辑，能够传递信号量给自己的子进程当中</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat entrypoint-signal.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#998;font-style:italic">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>/gosignal &amp; <span style="color:#008080">PID1</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;</span><span style="color:#008080">$!</span><span style="color:#d14">&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;gosignal started with pid </span><span style="color:#008080">$PID1</span><span style="color:#d14">&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>handle_sigterm<span style="color:#000;font-weight:bold">(){</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>        <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;[INFO] Received SIGTERM&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        <span style="color:#0086b3">kill</span> -SIGTERM <span style="color:#008080">$PID1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>        <span style="color:#0086b3">wait</span> <span style="color:#008080">$PID1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#000;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#0086b3">trap</span> handle_sigterm SIGTERM
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span><span style="color:#0086b3">wait</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># cat Dockerfile</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>FROM ubuntu:22.04
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>LABEL <span style="color:#d14">&#34;author&#34;</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;kid&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>ENV TINI_VERSION v0.19.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>ADD https://github.com/krallin/tini/releases/download/<span style="color:#d14">${</span><span style="color:#008080">TINI_VERSION</span><span style="color:#d14">}</span>/tini /tini
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>RUN chmod +x /tini
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>COPY gosignal/gosignal /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>COPY entrypoint-signal.sh /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>RUN chmod +x /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>COPY exec-app.sh /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>RUN chmod +x /exec-app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>COPY app.sh /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>RUN chmod +x /app.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>ENTRYPOINT <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;/tini&#34;</span>, <span style="color:#d14">&#34;--&#34;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>CMD <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;/entrypoint-signal.sh&#34;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span><span style="color:#998;font-style:italic"># 进程结构</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>root@d24562e8169a:/# ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span><span>root          <span style="color:#099">15</span>  0.6  0.0   <span style="color:#099">4628</span>  <span style="color:#099">3800</span> pts/0    Ss   18:14   0:00 bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span><span>root          <span style="color:#099">24</span>  0.0  0.0   <span style="color:#099">7064</span>  <span style="color:#099">1596</span> pts/0    R+   18:14   0:00  <span style="color:#d14">\_</span> ps -auxf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span><span>root           <span style="color:#099">1</span>  0.0  0.0   <span style="color:#099">2780</span>   <span style="color:#099">980</span> ?        Ss   18:12   0:00 /tini -- /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span><span>root           <span style="color:#099">7</span>  0.0  0.0   <span style="color:#099">4364</span>  <span style="color:#099">3276</span> ?        S    18:12   0:00 /bin/bash /entrypoint-signal.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span><span>root           <span style="color:#099">8</span>  0.0  0.0 <span style="color:#099">1225544</span> <span style="color:#099">2888</span> ?        Sl   18:12   0:00  <span style="color:#d14">\_</span> /gosignal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span><span style="color:#998;font-style:italic"># 此时gosignal进程作为bash的子进程形式存在。</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span><span style="color:#998;font-style:italic"># 执行docker stop 动作</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker stop tini-entrypoint-signal</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span><span>tini-entrypoint-signal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span><span><span style="color:#000;font-weight:bold">[</span>root@3114-db-mysql ubuntu<span style="color:#000;font-weight:bold">]</span><span style="color:#998;font-style:italic"># docker logs  -f tini-entrypoint-signal</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44</span><span>gosignal started with pid <span style="color:#099">8</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45</span><span>Starting application,Pid is :8, PPid is: <span style="color:#099">7</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46</span><span><span style="color:#000;font-weight:bold">[</span>INFO<span style="color:#000;font-weight:bold">]</span> Received SIGTERM
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47</span><span>已捕捉到信号：SIGTERM, 执行关闭,sig is : terminated
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48</span><span>Exiting!
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50</span><span><span style="color:#998;font-style:italic"># 结论：可以看到，脚本处理了SIGTERM的信号</span>
+</span></span></code></pre></div><h2 id="四总结">四、总结</h2>
+<ol>
+<li>
+<p>使用脚本如<code>ENTRYPOINT /entrypoint-signal.sh</code>这种能够处理信号的脚本作为应用启动的1号进程过程当中一定需要记得在<code>Dockerfile</code> 添加与该脚本一致的<code>SHELL [&quot;/bin/bash&quot;,&quot;-c&quot;]</code>参数，否则很有可能由于默认存在的<code>sh -c</code> 原因导致<code>entrypoint-signal.sh</code>么有办法成为1号进程，从而对信号处理失败。</p>
+</li>
+<li>
+<p>在使用<code>ENTRYPOINT [&quot;/tini&quot;, &quot;--&quot;]</code>的过程当中，如果使用<code>CMD</code>+<code>脚本启动业务进程</code>，切记此时的程序启动脚本需要能够进行<code>trap handle_sigterm SIGTERM</code>的信号捕捉动作，或者在脚本当中使用<code>exec</code>的方式跳脱bash/sh父进程管控的形式执行，否则使用<code>tini</code>也并无实际意义，依然是粗暴结束业务进程。更建议是以<code>CMD</code>+<code>业务二进制</code>程序的方式，这样一来容器内<code>PID</code>为<code>1</code>的<code>tini</code>作为所有进程的父进程，在收到到<code>SIGTERM</code>时，会向所有<code>PPID</code>为1的进程广播放送信号。</p>
+</li>
+</ol>
+<p>附：<code>gosignal</code>:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#000;font-weight:bold">package</span> main
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#000;font-weight:bold">import</span> (
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	<span style="color:#d14">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>	<span style="color:#d14">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>	<span style="color:#d14">&#34;os/signal&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>	<span style="color:#d14">&#34;syscall&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>	<span style="color:#d14">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>	pid <span style="color:#000;font-weight:bold">:=</span> os.<span style="color:#900;font-weight:bold">Getpid</span>()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>	ppid <span style="color:#000;font-weight:bold">:=</span> os.<span style="color:#900;font-weight:bold">Getppid</span>()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>	sigchan <span style="color:#000;font-weight:bold">:=</span> <span style="color:#0086b3">make</span>(<span style="color:#000;font-weight:bold">chan</span> os.Signal, <span style="color:#099">1</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>	done <span style="color:#000;font-weight:bold">:=</span> <span style="color:#0086b3">make</span>(<span style="color:#000;font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">bool</span>, <span style="color:#099">1</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>	<span style="color:#998;font-style:italic">// 注册一个通道,关注的系统信号量包含TERM、KILL、HUP
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#998;font-style:italic"></span>	signal.<span style="color:#900;font-weight:bold">Notify</span>(sigchan, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>	<span style="color:#000;font-weight:bold">go</span> <span style="color:#000;font-weight:bold">func</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>		sig <span style="color:#000;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">&lt;-</span>sigchan
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>		fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#d14">&#34;已捕捉到信号：SIGTERM, 执行关闭,sig is : %v\n&#34;</span>, sig)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>		time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second <span style="color:#000;font-weight:bold">*</span> <span style="color:#099">5</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>		done <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#000;font-weight:bold">true</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>	}()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#d14">&#34;Starting application,Pid is :%v, PPid is: %v\n&#34;</span>, pid, ppid)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>	<span style="color:#000;font-weight:bold">&lt;-</span>done
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#d14">&#34;Exiting!&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>}
+</span></span></code></pre></div>
+
+	    
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://ssslkj123.github.io/css/gitalk.css">
+<link rel="stylesheet" href="https://ssslkj123.github.io/css/gitalk/comment.css">
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="https://ssslkj123.github.io/js/md5.min.js"></script>
+<script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: '9bbccf93efbc67caca32',
+        clientSecret: '208da9c1b3eccad0b7ca35b2faa27390e4982e64',
+        repo: 'ssslkj123.github.io',
+        owner: 'ssslkj123',
+        admin: 'ssslkj123',
+        id: md5(location.pathname), 
+        distractionFreeMode: false 
+      });
+     (function() {
+       if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+         document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+         return;
+       }
+       gitalk.render('gitalk-container');
+     })();
+</script>
+
+
+
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="https://shuanglu.life/">Kid</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="https://shuanglu.life/post/20240613_%E5%AE%B9%E5%99%A8%E5%86%85%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86SIGTERM/">https://shuanglu.life/post/20240613_%E5%AE%B9%E5%99%A8%E5%86%85%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86SIGTERM/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+<div style="padding: 10px 0; margin: 20px auto; width: 100%; font-size:16px; text-align: center;">
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+        <span>打赏</span></button>
+    <div id="QR" style="display: none;">
+        <div id="wechat" style="display: inline-block">
+            <a class="fancybox" rel="group">
+                <img id="wechat_qr" src="https://github.com/ssslkj123/shuanglu.life/blob/master/images/wx.png?raw=true" alt="WeChat Pay"></a>
+            <p>微信打赏</p>
+        </div>
+        <div id="alipay" style="display: inline-block">
+            <a class="fancybox" rel="group">
+                <img id="alipay_qr" src="https://github.com/ssslkj123/shuanglu.life/blob/master/images/zfb.png?raw=true" alt="Alipay"></a>
+            <p>支付宝打赏</p>
+        </div>
+    </div>
+</div>
+
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/Docker'>Docker</a></li>
+                
+                <li><a href='/tags/%E5%AE%B9%E5%99%A8'>容器</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2024 <a href="https://shuanglu.life/">Shuanglu的博客 By Kid</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        
+    </div>
+	
+    <script src="/js/clipboard.js"></script>
+	
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://shuanglu.life/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://shuanglu.life/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://shuanglu.life/post/20240613_%E5%AE%B9%E5%99%A8%E5%86%85%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86SIGTERM/" title="20240613_容器内如何处理SIGTERM">20240613_容器内如何处理SIGTERM</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20240516_SQL%E9%80%9F%E6%88%90/" title="20240516_速成SQL">20240516_速成SQL</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20240420_getopts%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/" title="20240420_getopts脚本模板">20240420_getopts脚本模板</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20240416_python%E6%89%8B%E6%90%93http%E6%9C%8D%E5%8A%A1%E5%99%A8/" title="20240416_Python手搓Http服务器">20240416_Python手搓Http服务器</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20240410_pod%E5%A6%82%E4%BD%95%E8%8E%B7%E5%BE%97IP%E5%9C%B0%E5%9D%80/" title="20240410_pod如何获取IP地址">20240410_pod如何获取IP地址</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20240206_github%E5%A4%A7%E6%96%87%E4%BB%B6commit/" title="20240206_github大文件commit">20240206_github大文件commit</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20240110_golang%E6%8E%92%E5%BA%8F/" title="20240110_golang排序">20240110_golang排序</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20230807_eci%E4%B8%8Eswagent%E9%97%AE%E9%A2%98%E5%A4%84%E7%BD%AE%E6%96%B9%E5%BC%8F/" title="20230807_eci与swagent问题处置方式">20230807_eci与swagent问题处置方式</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20230727_velero%E5%A4%87%E4%BB%BD%E8%BF%81%E7%A7%BBkubernetes%E9%9B%86%E7%BE%A4/" title="20230727_velero备份迁移kubernetes集群">20230727_velero备份迁移kubernetes集群</a>
+    </li>
+    
+    <li>
+        <a href="https://shuanglu.life/post/20230309_KuriseRollout%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/" title="20230309_KuriseRollout灰度发布">20230309_KuriseRollout灰度发布</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://shuanglu.life/categories/1.10&#43;/">1.10&#43; (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/CNI/">CNI (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/docker/">Docker (4)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/dockerfile/">Dockerfile (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/etcd/">Etcd (2)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/git/">Git (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/github/">Github (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/golang/">Golang (2)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Harbor/">Harbor (2)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/">IO多路复用 (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/KruiseRollout/">KruiseRollout (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Kubernetes/">Kubernetes (6)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Linux/">Linux (3)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/openkruise/">Openkruise (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/openssl/">Openssl (2)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/os/">Os (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/Python/">Python (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/shell/">Shell (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/SQL/">SQL (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/systemd/">Systemd (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/velero/">Velero (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/web/">Web (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程 (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8/">容器 (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8%E5%9F%BA%E7%A1%80/">容器基础 (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/">容器网络 (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库 (1)</a></li>
+    
+    <li><a href="https://shuanglu.life/categories/%E6%A8%A1%E6%9D%BF/">模板 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://shuanglu.life/tags/CNI/">CNI</a>
+    
+    <a href="https://shuanglu.life/tags/docker/">Docker</a>
+    
+    <a href="https://shuanglu.life/tags/dockerfile/">Dockerfile</a>
+    
+    <a href="https://shuanglu.life/tags/etcd/">Etcd</a>
+    
+    <a href="https://shuanglu.life/tags/git/">Git</a>
+    
+    <a href="https://shuanglu.life/tags/github/">Github</a>
+    
+    <a href="https://shuanglu.life/tags/golang/">Golang</a>
+    
+    <a href="https://shuanglu.life/tags/Haproxy/">Haproxy</a>
+    
+    <a href="https://shuanglu.life/tags/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/">IO多路复用</a>
+    
+    <a href="https://shuanglu.life/tags/k8s/">K8s</a>
+    
+    <a href="https://shuanglu.life/tags/KruiseRollout/">KruiseRollout</a>
+    
+    <a href="https://shuanglu.life/tags/Kubernete/">Kubernete</a>
+    
+    <a href="https://shuanglu.life/tags/Linux/">Linux</a>
+    
+    <a href="https://shuanglu.life/tags/nginx/">Nginx</a>
+    
+    <a href="https://shuanglu.life/tags/os/">Os</a>
+    
+    <a href="https://shuanglu.life/tags/Python/">Python</a>
+    
+    <a href="https://shuanglu.life/tags/shell/">Shell</a>
+    
+    <a href="https://shuanglu.life/tags/skywalking-swck-mutating-webhook-configuration/">Skywalking-Swck-Mutating-Webhook-Configuration</a>
+    
+    <a href="https://shuanglu.life/tags/SQL/">SQL</a>
+    
+    <a href="https://shuanglu.life/tags/velero/">Velero</a>
+    
+    <a href="https://shuanglu.life/tags/%E4%BC%98%E5%8C%96/">优化</a>
+    
+    <a href="https://shuanglu.life/tags/%E5%8D%87%E7%BA%A7%E9%94%99%E8%AF%AF/">升级错误</a>
+    
+    <a href="https://shuanglu.life/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a>
+    
+    <a href="https://shuanglu.life/tags/%E5%AE%B9%E5%99%A8/">容器</a>
+    
+    <a href="https://shuanglu.life/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+    
+    <a href="https://shuanglu.life/tags/%E6%A8%A1%E6%9D%BF/">模板</a>
+    
+    <a href="https://shuanglu.life/tags/%E8%AF%81%E4%B9%A6/">证书</a>
+    
+    <a href="https://shuanglu.life/tags/%E8%BD%AC%E6%8D%A2/">转换</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86/">通用知识</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/">镜像仓库</a>
+    
+    <a href="https://shuanglu.life/tags/%E9%97%AE%E9%A2%98/">问题</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://shuanglu.live" title="Shuanglu的博客">Shuanglu的博客</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="http://docs.kubernetes.org.cn/" title="kubernetes相关指南">Kubernetes指南</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://shuanglu.life/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
